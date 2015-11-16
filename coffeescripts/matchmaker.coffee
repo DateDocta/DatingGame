@@ -1,0 +1,67 @@
+net = require('net')
+Utils = require "./utils"
+matchmakerSocket = net.createServer()
+
+class MatchMaker
+	constructor: (@listener) ->
+        @utils = new Utils
+        @N = @utils.N
+        @HOST = @utils.HOST
+        @MATCHMAKER_PORT = @utils.MATCHMAKER_PORT
+
+        @server = matchmakerSocket
+        @server.on 'data', (data) ->
+            @receivedMessage(data)
+
+        @server.listen @MATCHMAKER_PORT
+
+    checkIfNumbersValid: (numbers) ->
+        if numbers.length != @N
+            return false
+        for number in numbers
+            if number < 0
+                return false
+            else if number > 1
+                return false
+            else if @utils.numberOfDecimals(number) > 4
+                return false
+        true
+
+    # Makes Matchmaker input valid
+    # We adjust size and make it 
+    # inclusive 0 to 1
+    makeNumsValid: (numbers) ->
+        if numbers.length > @N
+            numbers = numbers.slice(0, @N-1)
+        else if numbers.length < @N
+            additionalNumsNeedded = @N - numbers.length
+            for [0..additionalNumsNeeded]
+                numbers.push(0)
+
+        for num, index in numbers
+            if num < 0
+                numbers[index] = 0
+            else if num > 1
+                numbers[index] = 1
+
+        numbers
+
+    # If valid, we update last valid and send to listner
+    # If it is not valid, we send the last valid nums to listener
+    # If none valid so far, we make current valid
+    receivedMessage: (message) ->
+        @currentNums = @utils.convertStringToNumArray(message)
+        valid = @checkIfNumbersValid(@currentNums)
+        if valid
+            @lastValidNums = @currentNums
+        else
+            if typeof @lastValidNums is 'undefined'
+                @currentNums = @utils.convertStringToNumArray(message, 4)
+                @lastValidNums = @makeNumsValid(@currentNums)
+
+        @listner.receivedCandidateFromMM(@lastValidNums)
+
+    sendMessage: (message) ->
+        @server.write(message)
+
+module.exports = MatchMaker
