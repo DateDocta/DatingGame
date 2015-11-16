@@ -1,8 +1,10 @@
 class Utils
-    @N = 20
-    @HOST = '127.0.0.1'
-    @MATCHMAKER_PORT = 6969
-    @PLAYER_PORT = 9696
+
+    constructor: () ->
+        @N = 20
+        @HOST = '127.0.0.1'
+        @MATCHMAKER_PORT = 6969
+        @PLAYER_PORT = 9696
 
     numberOfDecimals: (number) ->
         number = number.toString()
@@ -29,5 +31,17 @@ class Utils
             returnString += num + " "
 
         returnString
+
+    toString: () ->
+        console.log("Accessed in Utils")
+
+    getN: () ->
+        @N
+    getHOST: () ->
+        @HOST
+    getMATCHMAKER_PORT: () ->
+        @MATCHMAKER_PORT
+    getPLAYER_PORT: () ->
+        @PLAYER_PORT
 
 module.exports = Utils

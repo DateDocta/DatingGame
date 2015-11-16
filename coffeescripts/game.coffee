@@ -15,12 +15,14 @@ class Game
         @maxScore = -100
 
     receivedCandidateFromMM: (mmNumbers) ->
+        console.log("Received MM candidate")
         if @waitingForMMCandidate
             @waitingForMMCandidate = false
             @currentMMCandidate = mmNumbers
             @analyzeGame()
 
     receivedCandidateFromP: (pNumbers) ->
+        console.log("Received P candidate")
         if @waitingForPCandidate
             @waitingForPCandidate = false
             @currentPCandidate = mmNumbers

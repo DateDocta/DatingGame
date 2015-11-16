@@ -1,16 +1,18 @@
+console.log("In player Client")
 net = require('net')
 Utils = require "./utils"
 utils = new Utils
 
-N = utils.N
-HOST = utils.HOST
-MATCHMAKER_PORT = utils.MATCHMAKER_PORT
-PLAYER_PORT = utils.PLAYER_PORT
+N = utils.getN()
+HOST = utils.getHOST()
+MATCHMAKER_PORT = utils.getMATCHMAKER_PORT()
+PLAYER_PORT = utils.getPLAYER_PORT()
 
 lastReceivedNumbers = []
 lastReceivedScore = 0
 
-server = net.createServer()
+connectingPort =
+    port: PLAYER_PORT
 
 # EDIT HERE TO PLACE YOUR OWN MOVE
 makeCandidate = () ->
@@ -18,7 +20,7 @@ makeCandidate = () ->
     
 createBasicCandidate = () ->
     candidate = []
-    weigthValue = 1/(N/2)
+    weightValue = 1/(N/2)
     for index in [1..N]
         if index % 2 is 0
             candidate.push(weightValue)
@@ -27,16 +29,17 @@ createBasicCandidate = () ->
 
     candidate
 
-server.on 'connection', (client) ->
-
+client = net.connect(connectingPort, ->
+    console.log("Player Client Created")
     candidate = makeCandidate()
     candidateString = utils.convertNumArrayToFormattedString(candidate)
-    client.write(candidateString)
+    client.write(candidateString))
 
-    client.on 'data', (data) ->
-        if data is not "gameover"
-            candidate = makeCandidate()
-            candidateString = utils.convertNumArrayToFormattedString(candidate)
-            client.write(candidateString)
+client.on 'data', (data) ->
+    console.log("Player Client Received Data")
 
-server.listen PLAYER_PORT
+    if data is not "gameover"
+        console.log("Player Client sending data")
+        candidate = makeCandidate()
+        candidateString = utils.convertNumArrayToFormattedString(candidate)
+        client.write(candidateString)

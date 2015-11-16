@@ -12,13 +12,15 @@
     function MatchMaker(listener) {
       this.listener = listener;
       this.utils = new Utils;
-      this.N = this.utils.N;
-      this.HOST = this.utils.HOST;
-      this.MATCHMAKER_PORT = this.utils.MATCHMAKER_PORT;
+      this.N = this.utils.getN();
+      this.HOST = this.utils.getHOST();
+      this.MATCHMAKER_PORT = this.utils.getMATCHMAKER_PORT();
       this.server = matchmakerSocket;
       this.server.on('connection', function(client) {
         this.client = client;
+        console.log("Connection Made with matchmaker");
         return this.client.on('data', function(data) {
+          console.log("received mm data");
           return this.receivedMessage(data);
         });
       });
@@ -45,9 +47,10 @@
     };
 
     MatchMaker.prototype.makeNumsValid = function(numbers) {
-      var additionalNumsNeedded, i, index, j, len, num, ref;
+      var additionalNumsNeedded, amountToRemove, i, index, j, len, num, ref;
       if (numbers.length > this.N) {
-        numbers = numbers.slice(0, this.N - 1);
+        amountToRemove = numbers.length - this.N;
+        numbers = numbers.slice(this.N, amountToRemove);
       } else if (numbers.length < this.N) {
         additionalNumsNeedded = this.N - numbers.length;
         for (i = 0, ref = additionalNumsNeeded; 0 <= ref ? i <= ref : i >= ref; 0 <= ref ? i++ : i--) {
@@ -67,6 +70,7 @@
 
     MatchMaker.prototype.receivedMessage = function(message) {
       var valid;
+      console.log("Matchmaker Socket Recieved Message");
       this.currentNums = this.utils.convertStringToNumArray(message);
       valid = this.checkIfNumbersValid(this.currentNums);
       if (valid) {
@@ -81,6 +85,7 @@
     };
 
     MatchMaker.prototype.sendMessage = function(message) {
+      console.log("Matchmaker socket sending message");
       return this.client.write(message);
     };
 

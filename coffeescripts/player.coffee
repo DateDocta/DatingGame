@@ -5,13 +5,15 @@ playerSocket = net.createServer()
 class Player
 	constructor: (@listener) ->
         @utils = new Utils
-        @N = @utils.N
-        @HOST = @utils.HOST
-        @PLAYER_PORT = @utils.PLAYER_PORT
+        @N = @utils.getN()
+        @HOST = @utils.getHOST()
+        @PLAYER_PORT = @utils.getPLAYER_PORT()
 
         @server = playerSocket
         @server.on 'connection', (@client) ->
+            console.log("Connection Made with player")
             @client.on 'data', (data) ->
+                console.log("received player data")
                 @receivedMessage(data)
 
         @server.listen @PLAYER_PORT
@@ -82,6 +84,7 @@ class Player
     # If it is not valid, we send the last valid nums to listener
     # If none valid so far, we make current valid
     receivedMessage: (message) ->
+        console.log("Player Socket Recieved Message")
         @currentNums = @utils.convertStringToNumArray(message)
 
         if typeof @lastValidNums is 'undefined'
@@ -99,6 +102,7 @@ class Player
         @listner.receivedCandidateFromP(@lastValidNums)
 
     sendMessage: (message) ->
+        console.log("player socket sending message")
         @client.write(message)
 
 module.exports = Player

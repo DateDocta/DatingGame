@@ -1,23 +1,27 @@
+console.log("In matchMaker Client")
+
 net = require('net')
 Utils = require "./utils"
 utils = new Utils
 
-N = utils.N
-HOST = utils.HOST
-MATCHMAKER_PORT = utils.MATCHMAKER_PORT
-PLAYER_PORT = utils.PLAYER_PORT
+N = utils.getN()
+HOST = utils.getHOST()
+MATCHMAKER_PORT = utils.getMATCHMAKER_PORT()
+PLAYER_PORT = utils.getPLAYER_PORT()
+
+console.log("Matchmaker Port #{MATCHMAKER_PORT}")
+
+connectingPort =
+    port: MATCHMAKER_PORT
 
 lastReceivedNumbers = []
 lastReceivedScore = 0
-
-server = net.createServer()
 
 parseData = (data) ->
     if data.split("\n").length > 10
         parseMultipleCandidates(data)
     else
         parseSingleCandidate(data)
-
 
 parseSingleCandidate = (data) ->
     lastReceivedCandidate = []
@@ -66,13 +70,14 @@ createRandomCandidate = () ->
 
     candidate
 
-server.on 'connection', (client) ->
+client = net.connect(connectingPort, ->
+    console.log("MM Client Connected"))
 
-    client.on 'data', (data) ->
-        if data is not "gameover"
-            parseData(data)
-            candidate = makeCandidate()
-            candidateString = utils.convertNumArrayToFormattedString(candidate)
-            client.write(candidateString)
-
-server.listen MATCHMAKER_PORT
+client.on 'data', (data) ->
+    console.log("MM Client Received Data")
+    if data is not "gameover"
+        console.log("MM Client sending data")
+        parseData(data)
+        candidate = makeCandidate()
+        candidateString = utils.convertNumArrayToFormattedString(candidate)
+        client.write(candidateString)

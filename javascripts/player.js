@@ -12,13 +12,15 @@
     function Player(listener) {
       this.listener = listener;
       this.utils = new Utils;
-      this.N = this.utils.N;
-      this.HOST = this.utils.HOST;
-      this.PLAYER_PORT = this.utils.PLAYER_PORT;
+      this.N = this.utils.getN();
+      this.HOST = this.utils.getHOST();
+      this.PLAYER_PORT = this.utils.getPLAYER_PORT();
       this.server = playerSocket;
       this.server.on('connection', function(client) {
         this.client = client;
+        console.log("Connection Made with player");
         return this.client.on('data', function(data) {
+          console.log("received player data");
           return this.receivedMessage(data);
         });
       });
@@ -108,6 +110,7 @@
 
     Player.prototype.receivedMessage = function(message) {
       var valid;
+      console.log("Player Socket Recieved Message");
       this.currentNums = this.utils.convertStringToNumArray(message);
       if (typeof this.lastValidNums === 'undefined') {
         valid = this.briefCheckIfNumbersValid(this.currentNums);
@@ -127,6 +130,7 @@
     };
 
     Player.prototype.sendMessage = function(message) {
+      console.log("player socket sending message");
       return this.client.write(message);
     };
 

@@ -5,13 +5,15 @@ matchmakerSocket = net.createServer()
 class MatchMaker
 	constructor: (@listener) ->
         @utils = new Utils
-        @N = @utils.N
-        @HOST = @utils.HOST
-        @MATCHMAKER_PORT = @utils.MATCHMAKER_PORT
+        @N = @utils.getN()
+        @HOST = @utils.getHOST()
+        @MATCHMAKER_PORT = @utils.getMATCHMAKER_PORT()
 
         @server = matchmakerSocket
         @server.on 'connection', (@client) ->
+            console.log("Connection Made with matchmaker")
             @client.on 'data', (data) ->
+                console.log("received mm data")
                 @receivedMessage(data)
 
         @server.listen @MATCHMAKER_PORT
@@ -34,7 +36,8 @@ class MatchMaker
     # inclusive 0 to 1
     makeNumsValid: (numbers) ->
         if numbers.length > @N
-            numbers = numbers.slice(0, @N-1)
+            amountToRemove = numbers.length - @N
+            numbers = numbers.slice(@N, amountToRemove)
         else if numbers.length < @N
             additionalNumsNeedded = @N - numbers.length
             for [0..additionalNumsNeeded]
@@ -52,6 +55,7 @@ class MatchMaker
     # If it is not valid, we send the last valid nums to listener
     # If none valid so far, we make current valid
     receivedMessage: (message) ->
+        console.log("Matchmaker Socket Recieved Message")
         @currentNums = @utils.convertStringToNumArray(message)
         valid = @checkIfNumbersValid(@currentNums)
         if valid
@@ -64,6 +68,7 @@ class MatchMaker
         @listner.receivedCandidateFromMM(@lastValidNums)
 
     sendMessage: (message) ->
+        console.log("Matchmaker socket sending message")
         @client.write(message)
 
 module.exports = MatchMaker

@@ -21,6 +21,7 @@
     }
 
     Game.prototype.receivedCandidateFromMM = function(mmNumbers) {
+      console.log("Received MM candidate");
       if (this.waitingForMMCandidate) {
         this.waitingForMMCandidate = false;
         this.currentMMCandidate = mmNumbers;
@@ -29,6 +30,7 @@
     };
 
     Game.prototype.receivedCandidateFromP = function(pNumbers) {
+      console.log("Received P candidate");
       if (this.waitingForPCandidate) {
         this.waitingForPCandidate = false;
         this.currentPCandidate = mmNumbers;
