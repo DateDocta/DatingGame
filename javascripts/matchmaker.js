@@ -15,18 +15,28 @@
       this.N = this.utils.getN();
       this.HOST = this.utils.getHOST();
       this.MATCHMAKER_PORT = this.utils.getMATCHMAKER_PORT();
-      this.server = matchmakerSocket;
-      this.server.on('connection', function(client) {
-        this.client = client;
-        console.log("Connection Made with matchmaker");
-        return this.client.on('data', function(data) {
-          console.log("received mm data");
-          return this.receivedMessage(data);
-        });
-      });
-      this.server.listen(this.MATCHMAKER_PORT);
-      console.log("Matchmaker Port started");
+
+      /*
+      @server = matchmakerSocket
+      @server.on 'connection', (@client) ->
+          console.log("Connection Made with matchmaker")
+          @client.on 'data', (data) ->
+              console.log("received mm data")
+              @receivedMessage(data)
+      @server.listen @MATCHMAKER_PORT
+      console.log("Matchmaker Port started")
+       */
+      this.startServer();
     }
+
+    MatchMaker.prototype.connectionFunction = function(client) {
+      this.client = client;
+      console.log("Connection Made with matchmaker");
+      return this.client.on('data', function(data) {
+        console.log("received mm data");
+        return this.receivedMessage(data);
+      });
+    };
 
     MatchMaker.prototype.checkIfNumbersValid = function(numbers) {
       var i, len, number;
@@ -87,6 +97,20 @@
     MatchMaker.prototype.sendMessage = function(message) {
       console.log("Matchmaker socket sending message");
       return this.client.write(message);
+    };
+
+    MatchMaker.prototype.startServer = function() {
+      this.server = matchmakerSocket;
+      this.server.on('connection', function(client) {
+        this.client = client;
+        console.log("Connection Made with matchmaker");
+        return this.client.on('data', function(data) {
+          console.log("received mm data");
+          return this.receivedMessage(data);
+        });
+      });
+      this.server.listen(this.MATCHMAKER_PORT);
+      return console.log("Matchmaker Port started");
     };
 
     return MatchMaker;

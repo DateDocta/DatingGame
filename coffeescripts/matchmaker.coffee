@@ -8,16 +8,24 @@ class MatchMaker
         @N = @utils.getN()
         @HOST = @utils.getHOST()
         @MATCHMAKER_PORT = @utils.getMATCHMAKER_PORT()
-
+        ###
         @server = matchmakerSocket
         @server.on 'connection', (@client) ->
             console.log("Connection Made with matchmaker")
             @client.on 'data', (data) ->
                 console.log("received mm data")
                 @receivedMessage(data)
-
         @server.listen @MATCHMAKER_PORT
         console.log("Matchmaker Port started")
+        ###
+
+        @startServer()
+
+    connectionFunction: (@client) ->
+        console.log("Connection Made with matchmaker")
+        @client.on 'data', (data) ->
+            console.log("received mm data")
+            @receivedMessage(data)
 
     checkIfNumbersValid: (numbers) ->
         if numbers.length != @N
@@ -70,5 +78,15 @@ class MatchMaker
     sendMessage: (message) ->
         console.log("Matchmaker socket sending message")
         @client.write(message)
+
+    startServer: () ->
+        @server = matchmakerSocket
+        @server.on 'connection', (@client) ->
+            console.log("Connection Made with matchmaker")
+            @client.on 'data', (data) ->
+                console.log("received mm data")
+                @receivedMessage(data)
+        @server.listen @MATCHMAKER_PORT
+        console.log("Matchmaker Port started")
 
 module.exports = MatchMaker

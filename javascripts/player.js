@@ -15,17 +15,19 @@
       this.N = this.utils.getN();
       this.HOST = this.utils.getHOST();
       this.PLAYER_PORT = this.utils.getPLAYER_PORT();
-      this.server = playerSocket;
-      this.server.on('connection', function(client) {
-        this.client = client;
-        console.log("Connection Made with player");
-        return this.client.on('data', function(data) {
-          console.log("received player data");
-          return this.receivedMessage(data);
-        });
-      });
-      this.server.listen(this.PLAYER_PORT);
-      console.log("Player Port Started");
+
+      /*
+      @server = playerSocket
+      @server.on 'connection', (@client) ->
+          console.log("Connection Made with player")
+          @client.on 'data', (data) ->
+              console.log("received player data")
+              @receivedMessage(data)
+      
+      @server.listen @PLAYER_PORT
+      console.log("Player Port Started")
+       */
+      this.startServer();
     }
 
     Player.prototype.checkIfSumToCorrectValues = function(numbers) {
@@ -132,6 +134,20 @@
     Player.prototype.sendMessage = function(message) {
       console.log("player socket sending message");
       return this.client.write(message);
+    };
+
+    Player.prototype.startServer = function() {
+      this.server = playerSocket;
+      this.server.on('connection', function(client) {
+        this.client = client;
+        console.log("Connection Made with player");
+        return this.client.on('data', function(data) {
+          console.log("received player data");
+          return this.receivedMessage(data);
+        });
+      });
+      this.server.listen(this.PLAYER_PORT);
+      return console.log("Player Port Started");
     };
 
     return Player;

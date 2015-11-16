@@ -9,6 +9,7 @@ class Player
         @HOST = @utils.getHOST()
         @PLAYER_PORT = @utils.getPLAYER_PORT()
 
+        ###
         @server = playerSocket
         @server.on 'connection', (@client) ->
             console.log("Connection Made with player")
@@ -18,6 +19,8 @@ class Player
 
         @server.listen @PLAYER_PORT
         console.log("Player Port Started")
+        ###
+        @startServer()
 
     checkIfSumToCorrectValues: (numbers) ->
         totalPositiveValue = 0
@@ -104,5 +107,16 @@ class Player
     sendMessage: (message) ->
         console.log("player socket sending message")
         @client.write(message)
+
+    startServer: () ->
+        @server = playerSocket
+        @server.on 'connection', (@client) ->
+            console.log("Connection Made with player")
+            @client.on 'data', (data) ->
+                console.log("received player data")
+                @receivedMessage(data)
+
+        @server.listen @PLAYER_PORT
+        console.log("Player Port Started")
 
 module.exports = Player
