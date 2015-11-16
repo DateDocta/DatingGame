@@ -19,7 +19,7 @@
     };
 
     Utils.prototype.convertStringToNumArray = function(numberString, decimalPoints) {
-      var index, numberArray, stringArray, value;
+      var i, index, j, numberArray, ref, ref1, stringArray;
       if (decimalPoints == null) {
         decimalPoints = 0;
       }
@@ -27,30 +27,28 @@
       if (numberString) {
         stringArray = numberString.split(" ");
         if (decimalPoints === 0) {
-          numberArray[index] = (function() {
-            var i, len, results;
-            results = [];
-            for (index = i = 0, len = stringArray.length; i < len; index = ++i) {
-              value = stringArray[index];
-              results.push(parseFloat(value));
-            }
-            return results;
-          })();
+          for (index = i = 0, ref = this.N - 1; 0 <= ref ? i <= ref : i >= ref; index = 0 <= ref ? ++i : --i) {
+            numberArray.push(parseFloat(stringArray[index]));
+          }
         } else {
-          numberArray[index] = (function() {
-            var i, len, results;
-            results = [];
-            for (index = i = 0, len = stringArray.length; i < len; index = ++i) {
-              value = stringArray[index];
-              results.push(parseFloat(value).toFixed(decimalPoints));
-            }
-            return results;
-          })();
+          for (index = j = 0, ref1 = this.N - 1; 0 <= ref1 ? j <= ref1 : j >= ref1; index = 0 <= ref1 ? ++j : --j) {
+            numberArray.push(parseFloat(stringArray[index]).toFixed(decimalPoints));
+          }
         }
         return numberArray;
       } else {
         return console.log("We are splitting an undefined");
       }
+    };
+
+    Utils.prototype.convertNumArrayToFormattedString = function(numArray) {
+      var i, len, num, returnString;
+      returnString = "";
+      for (i = 0, len = numArray.length; i < len; i++) {
+        num = numArray[i];
+        returnString += num + " ";
+      }
+      return returnString;
     };
 
     return Utils;

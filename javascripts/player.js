@@ -16,10 +16,14 @@
       this.HOST = this.utils.HOST;
       this.PLAYER_PORT = this.utils.PLAYER_PORT;
       this.server = playerSocket;
-      this.server.on('data', function(data) {
-        return this.receivedMessage(data);
+      this.server.on('connection', function(client) {
+        this.client = client;
+        return this.client.on('data', function(data) {
+          return this.receivedMessage(data);
+        });
       });
       this.server.listen(this.PLAYER_PORT);
+      console.log("Player Port Started");
     }
 
     Player.prototype.checkIfSumToCorrectValues = function(numbers) {
@@ -123,7 +127,7 @@
     };
 
     Player.prototype.sendMessage = function(message) {
-      return this.server.write(message);
+      return this.client.write(message);
     };
 
     return Player;

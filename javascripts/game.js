@@ -99,8 +99,16 @@
     };
 
     Game.prototype.scoreVector = function(vectorA, vectorB) {
-      var score;
-      return score = math.dot(vectorA, vectorB);
+      var i, index, len, score, value;
+      if (vectorA.length === !vectorB.length) {
+        throw "can't dot product different length arrays";
+      }
+      score = 0;
+      for (index = i = 0, len = vectorA.length; i < len; index = ++i) {
+        value = vectorA[index];
+        score += value * vectorB[index];
+      }
+      return score;
     };
 
     Game.prototype.scoredCandidateString = function(matchmakerCandidate, playerCandidate) {
@@ -114,8 +122,7 @@
         number = matchmakerCandidate[i];
         returnString += number + " ";
       }
-      returnString += "| " + score + "\n";
-      return console.log(returnString);
+      return returnString += "| " + score + " \n";
     };
 
     Game.prototype.createRandomCandidateForMM = function() {
@@ -130,5 +137,7 @@
     return Game;
 
   })();
+
+  module.exports = Game;
 
 }).call(this);

@@ -16,10 +16,14 @@
       this.HOST = this.utils.HOST;
       this.MATCHMAKER_PORT = this.utils.MATCHMAKER_PORT;
       this.server = matchmakerSocket;
-      this.server.on('data', function(data) {
-        return this.receivedMessage(data);
+      this.server.on('connection', function(client) {
+        this.client = client;
+        return this.client.on('data', function(data) {
+          return this.receivedMessage(data);
+        });
       });
       this.server.listen(this.MATCHMAKER_PORT);
+      console.log("Matchmaker Port started");
     }
 
     MatchMaker.prototype.checkIfNumbersValid = function(numbers) {
@@ -77,7 +81,7 @@
     };
 
     MatchMaker.prototype.sendMessage = function(message) {
-      return this.server.write(message);
+      return this.client.write(message);
     };
 
     return MatchMaker;

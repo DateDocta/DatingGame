@@ -97,9 +97,14 @@ class Game
         @player.sendMessage("gameover")
 
     scoreVector: (vectorA, vectorB) ->
-        score = math.dot(vectorA, vectorB)
+        if vectorA.length is not vectorB.length
+            throw "can't dot product different length arrays"
+        score = 0
+        for value, index in vectorA
+            score += value * vectorB[index]
+        score
 
-    # Creates string "x1 x2 x3 x4 | score\n"
+    # Creates string "x1 x2 x3 x4 | score \n"
     scoredCandidateString: (matchmakerCandidate, playerCandidate = @currentPCandidate) ->
         returnString = ""
         score = scoreVector(matchmakerCandidate, playerCandidate)
@@ -107,11 +112,12 @@ class Game
         for number in matchmakerCandidate
             returnString += number + " "
 
-        returnString += "| " + score + "\n"
-        console.log(returnString)
+        returnString += "| " + score + " \n"
 
     createRandomCandidateForMM: ->
         numberArray = []
         for index in [1..@N]
             numberArray.push(Math.random().toFixed(4))
         numberArray
+
+module.exports = Game

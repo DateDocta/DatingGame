@@ -10,10 +10,12 @@ class Player
         @PLAYER_PORT = @utils.PLAYER_PORT
 
         @server = playerSocket
-        @server.on 'data', (data) ->
-            @receivedMessage(data)
+        @server.on 'connection', (@client) ->
+            @client.on 'data', (data) ->
+                @receivedMessage(data)
 
         @server.listen @PLAYER_PORT
+        console.log("Player Port Started")
 
     checkIfSumToCorrectValues: (numbers) ->
         totalPositiveValue = 0
@@ -97,6 +99,6 @@ class Player
         @listner.receivedCandidateFromP(@lastValidNums)
 
     sendMessage: (message) ->
-        @server.write(message)
+        @client.write(message)
 
 module.exports = Player

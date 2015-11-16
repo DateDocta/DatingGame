@@ -10,10 +10,12 @@ class MatchMaker
         @MATCHMAKER_PORT = @utils.MATCHMAKER_PORT
 
         @server = matchmakerSocket
-        @server.on 'data', (data) ->
-            @receivedMessage(data)
+        @server.on 'connection', (@client) ->
+            @client.on 'data', (data) ->
+                @receivedMessage(data)
 
         @server.listen @MATCHMAKER_PORT
+        console.log("Matchmaker Port started")
 
     checkIfNumbersValid: (numbers) ->
         if numbers.length != @N
@@ -62,6 +64,6 @@ class MatchMaker
         @listner.receivedCandidateFromMM(@lastValidNums)
 
     sendMessage: (message) ->
-        @server.write(message)
+        @client.write(message)
 
 module.exports = MatchMaker

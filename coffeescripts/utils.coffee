@@ -13,15 +13,21 @@ class Utils
         if numberString
             stringArray = numberString.split(" ")
             if decimalPoints is 0
-                numberArray[index] =
-                    parseFloat(value) for value, index in stringArray
+                for index in [0..@N-1]
+                    numberArray.push(parseFloat(stringArray[index]))
             else
-                numberArray[index] =
-                    parseFloat(value)
-                        .toFixed(decimalPoints) for value, index in stringArray
+                for index in [0..@N-1]
+                    numberArray.push(parseFloat(stringArray[index]).toFixed(decimalPoints))
 
             return numberArray
         else
             console.log("We are splitting an undefined")
+
+    convertNumArrayToFormattedString: (numArray) ->
+        returnString = ""
+        for num in numArray
+            returnString += num + " "
+
+        returnString
 
 module.exports = Utils
