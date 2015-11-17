@@ -40,9 +40,12 @@ client = net.connect(connectingPort, ->
 
 client.on 'data', (data) ->
     #console.log("Player Client Received Data: #{data}")
-
+    data = data.toString()
+    
     if data != "gameover"
         candidate = makeCandidate()
         candidateString = utilsL.convertNumArrayToFormattedString(candidate)
         console.log("Player Client sending data")
         client.write(candidateString)
+    else
+        console.log("GAMEOVER")

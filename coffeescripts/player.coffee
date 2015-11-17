@@ -34,7 +34,7 @@ class Player
         return valid
 
     addListener: (@listener) ->
-        console.log("Listener added")
+        console.log("Player added Listener")
 
     checkIfInitialNumbersAreValid: (initialNumbers) ->
         valid = @briefCheckIfNumbersValid(initialNumbers)

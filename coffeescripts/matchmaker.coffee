@@ -11,7 +11,7 @@ class MatchMaker
         @MATCHMAKER_PORT = @utils.MATCHMAKER_PORT
 
     addListener: (@listener) ->
-        console.log("Listener added")
+        console.log("MM added Listener")
 
     checkIfNumbersValid: (numbers) ->
         if numbers.length != @N

@@ -38,7 +38,7 @@ parseSingleCandidate = (data) ->
     lastReceivedScore = splitData[N+2]
 
 parseMultipleCandidates = (data) ->
-    
+
     totalCandidates = []
     totalCandidatesScores = []
     currentCandidate = []
@@ -74,6 +74,7 @@ client = net.connect(connectingPort, ->
     console.log("MM Client Connected on port #{connectingPort.port}"))
 
 client.on 'data', (data) ->
+    data = data.toString()
 
     if data != "gameover"
         parseData(data)
@@ -81,3 +82,5 @@ client.on 'data', (data) ->
         candidateString = utilsL.convertNumArrayToFormattedString(candidate)
         console.log("MM Client sending data")
         client.write(candidateString)
+    else
+        console.log("GAMEOVER")

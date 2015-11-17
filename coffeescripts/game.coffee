@@ -8,8 +8,8 @@ class Game
         @matchMaker = new MatchMaker this
         @player = new Player this
         @N = @utils.N
-        @connectedToMM = false
-        @connectedToP = false
+        @MisConnected = false
+        @PisConnected = false
         @waitingForMMCandidate = false
         @waitingForPCandidate = true
         @turn = 0
@@ -18,11 +18,18 @@ class Game
 
         @setup()
 
+    delay: (ms, func) -> setTimeout func, ms
+
     setup: ->
         @matchMaker.addListener(this)
         @player.addListener(this)
-        @matchMaker.startServer()
-        @player.startServer()
+
+        @delay 1000, =>
+            @matchMaker.startServer()
+            @player.startServer()
+
+    checkIfBothPlayersConnected: () ->
+        value = @PisConnected and @MisConnected
 
     receivedCandidateFromMM: (mmNumbers) ->
         console.log("Received MM candidate")
@@ -39,10 +46,16 @@ class Game
             @analyzeGame()
 
     connectedToMM: () ->
-        @connectedToMM = true
+        console.log("Game knows MM is connected")
+        @MisConnected = true
+
+        # Analyze Game call ensures we fuction correctly
+        # if P connects first
+        @analyzeGame()
 
     connectedToP: () ->
-        @connectedToP = true
+        console.log("Game knows P is connected")
+        @PisConnected = true
 
     updateMaxValues: (score) ->
         if score > @maxScore
@@ -52,13 +65,27 @@ class Game
             @maxPVector = @currentPCandidate
 
     analyzeGame: ->
+
+        # Make sure we are all connected
+        if not @checkIfBothPlayersConnected()
+            return
+
         # Check if we have received messages from P and M
         if @waitingForMMCandidate or @waitingForPCandidate
             return
 
+
         # Initial Turn
         if @turn is 0
             
+            # On turn one, we only need data from Player
+            # This causes and issue if the player connects first, sends data
+            # and we try to send data back to P and MM when MM isn't connected yet
+            # This loop ensures we don't continue until both P and MM are connected
+            loop
+                bothPlayersConnected = @checkIfBothPlayersConnected()
+                break if bothPlayersConnected
+
             #Create 20 rand cand, score, send to M
             mmMessage = ""
 
@@ -75,14 +102,14 @@ class Game
         # Remaining Turns
         else
             #Calc current Score, send messages, update turn
-            @turn += 1
             score = @scoreVector(@currentMMCandidate, @currentPCandidate)
             @updateMaxValues(score)
 
-            if score > 0.9999999999 or @turn is 20
+            if score > 0.99999999 or @turn is 20
                 @endGame()
 
             else
+                @turn += 1
                 pMessage = "continue"
                 mmMessage = @scoredCandidateString(@currentMMCandidate, @currentPCandidate)
                 @waitingForPCandidate = true
@@ -94,12 +121,12 @@ class Game
     endGame: ->
         # Max Scores
         endMessage = ""
-        endMessage += "Ultimate Score is (#{@maxScore}, #{@turn})"
+        endMessage += "Ultimate Score is (#{@maxScore}, #{@turn})\n\n"
         endMessage += "Breakdown of Score\n"
         endMessage += "-----------------------------------\n\n"
-        endMessage += "Turn of Max Score: #{@maxScoreTurn}\n"
-        endMessage += "Max Score: #{@maxScore}\n"
-        endMessage += "Matchmaker Candidate with Max Score: #{@maxMMVector}\n"
+        endMessage += "Turn of Max Score: #{@maxScoreTurn}\n\n"
+        endMessage += "Max Score: #{@maxScore}\n\n"
+        endMessage += "Matchmaker Candidate with Max Score: #{@maxMMVector}\n\n"
         endMessage += "Player Candidate at turn of Max Score: #{@maxPVector}\n"
 
         endMessage += "\n\n"
@@ -107,8 +134,8 @@ class Game
         # Last Turn Scores
         score = @scoreVector(@currentMMCandidate, @currentPCandidate)
         endMessage += "Turn #{@turn}\n"
-        endMessage += "Last Turn Score: #{score}\n"
-        endMessage += "Last Matchmaker Candidate: #{@currentMMCandidate}\n"
+        endMessage += "Last Turn Score: #{score}\n\n"
+        endMessage += "Last Matchmaker Candidate: #{@currentMMCandidate}\n\n"
         endMessage += "Last Player Candidate: #{@currentPCandidate}\n"
 
         console.log(endMessage)
