@@ -120,7 +120,7 @@ class Player
     startServer: () ->
         @server = playerSocket
         @server.on 'connection', (@client) =>
-            console.log("Connection Made with player")
+            @listener.connectedToP()
             @client.on 'data', (data) =>
 
                 #console.log("Player Socket Recieved Message")

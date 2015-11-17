@@ -14,6 +14,8 @@
       this.matchMaker = new MatchMaker(this);
       this.player = new Player(this);
       this.N = this.utils.N;
+      this.connectedToMM = false;
+      this.connectedToP = false;
       this.waitingForMMCandidate = false;
       this.waitingForPCandidate = true;
       this.turn = 0;
@@ -46,6 +48,14 @@
       }
     };
 
+    Game.prototype.connectedToMM = function() {
+      return this.connectedToMM = true;
+    };
+
+    Game.prototype.connectedToP = function() {
+      return this.connectedToP = true;
+    };
+
     Game.prototype.updateMaxValues = function(score) {
       if (score > this.maxScore) {
         this.maxScore = score;
@@ -75,14 +85,13 @@
         this.turn += 1;
         score = this.scoreVector(this.currentMMCandidate, this.currentPCandidate);
         this.updateMaxValues(score);
-        if (score === 1 || this.turn === 20) {
+        if (score > 0.9999999999 || this.turn === 20) {
           return this.endGame();
         } else {
           pMessage = "continue";
           mmMessage = this.scoredCandidateString(this.currentMMCandidate, this.currentPCandidate);
           this.waitingForPCandidate = true;
           this.waitingForMMCandidate = true;
-          this.turn += 1;
           this.matchMaker.sendMessage(mmMessage);
           return this.player.sendMessage(pMessage);
         }
@@ -98,7 +107,7 @@
       endMessage += "Turn of Max Score: " + this.maxScoreTurn + "\n";
       endMessage += "Max Score: " + this.maxScore + "\n";
       endMessage += "Matchmaker Candidate with Max Score: " + this.maxMMVector + "\n";
-      endMessage += "Player Candidate at turn of Max Score: " + this.maxMMVector + "\n";
+      endMessage += "Player Candidate at turn of Max Score: " + this.maxPVector + "\n";
       endMessage += "\n\n";
       score = this.scoreVector(this.currentMMCandidate, this.currentPCandidate);
       endMessage += "Turn " + this.turn + "\n";

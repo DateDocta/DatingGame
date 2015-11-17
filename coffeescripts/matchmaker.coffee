@@ -68,7 +68,7 @@ class MatchMaker
     startServer: () ->
         @server = matchmakerSocket
         @server.on 'connection', (@client) =>
-            console.log("Connection Made with matchmaker")
+            @listener.connectedToMM()
             @client.on 'data', (data) =>
                 #console.log("received mm data")
                 @receivedMessage(data)

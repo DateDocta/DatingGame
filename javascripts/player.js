@@ -149,7 +149,7 @@
       this.server.on('connection', (function(_this) {
         return function(client) {
           _this.client = client;
-          console.log("Connection Made with player");
+          _this.listener.connectedToP();
           return _this.client.on('data', function(data) {
             return _this.receivedMessage(data);
           });

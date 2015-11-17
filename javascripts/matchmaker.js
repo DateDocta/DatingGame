@@ -87,7 +87,7 @@
       this.server.on('connection', (function(_this) {
         return function(client) {
           _this.client = client;
-          console.log("Connection Made with matchmaker");
+          _this.listener.connectedToMM();
           return _this.client.on('data', function(data) {
             return _this.receivedMessage(data);
           });

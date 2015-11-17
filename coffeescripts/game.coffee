@@ -8,6 +8,8 @@ class Game
         @matchMaker = new MatchMaker this
         @player = new Player this
         @N = @utils.N
+        @connectedToMM = false
+        @connectedToP = false
         @waitingForMMCandidate = false
         @waitingForPCandidate = true
         @turn = 0
@@ -35,6 +37,12 @@ class Game
             @waitingForPCandidate = false
             @currentPCandidate = pNumbers
             @analyzeGame()
+
+    connectedToMM: () ->
+        @connectedToMM = true
+
+    connectedToP: () ->
+        @connectedToP = true
 
     updateMaxValues: (score) ->
         if score > @maxScore
@@ -71,7 +79,7 @@ class Game
             score = @scoreVector(@currentMMCandidate, @currentPCandidate)
             @updateMaxValues(score)
 
-            if score is 1 or @turn is 20
+            if score > 0.9999999999 or @turn is 20
                 @endGame()
 
             else
@@ -79,7 +87,6 @@ class Game
                 mmMessage = @scoredCandidateString(@currentMMCandidate, @currentPCandidate)
                 @waitingForPCandidate = true
                 @waitingForMMCandidate = true
-                @turn += 1
                 @matchMaker.sendMessage(mmMessage)
                 @player.sendMessage(pMessage)
 
@@ -93,7 +100,7 @@ class Game
         endMessage += "Turn of Max Score: #{@maxScoreTurn}\n"
         endMessage += "Max Score: #{@maxScore}\n"
         endMessage += "Matchmaker Candidate with Max Score: #{@maxMMVector}\n"
-        endMessage += "Player Candidate at turn of Max Score: #{@maxMMVector}\n"
+        endMessage += "Player Candidate at turn of Max Score: #{@maxPVector}\n"
 
         endMessage += "\n\n"
 
@@ -108,6 +115,7 @@ class Game
         @matchMaker.sendMessage("gameover")
         @player.sendMessage("gameover")
 
+    # Dot Product
     scoreVector: (vectorA, vectorB) ->
         if vectorA.length is not vectorB.length
             throw "can't dot product different length arrays"
