@@ -1,31 +1,17 @@
 net = require('net')
 Utils = require "./utils"
+utilsL = new Utils
 matchmakerSocket = net.createServer()
 
 class MatchMaker
-	constructor: (@listener) ->
+	constructor: () ->
         @utils = new Utils
-        @N = @utils.getN()
-        @HOST = @utils.getHOST()
-        @MATCHMAKER_PORT = @utils.getMATCHMAKER_PORT()
-        ###
-        @server = matchmakerSocket
-        @server.on 'connection', (@client) ->
-            console.log("Connection Made with matchmaker")
-            @client.on 'data', (data) ->
-                console.log("received mm data")
-                @receivedMessage(data)
-        @server.listen @MATCHMAKER_PORT
-        console.log("Matchmaker Port started")
-        ###
+        @N = @utils.N
+        @HOST = @utils.HOST
+        @MATCHMAKER_PORT = @utils.MATCHMAKER_PORT
 
-        @startServer()
-
-    connectionFunction: (@client) ->
-        console.log("Connection Made with matchmaker")
-        @client.on 'data', (data) ->
-            console.log("received mm data")
-            @receivedMessage(data)
+    addListener: (@listener) ->
+        console.log("Listener added")
 
     checkIfNumbersValid: (numbers) ->
         if numbers.length != @N
@@ -35,7 +21,7 @@ class MatchMaker
                 return false
             else if number > 1
                 return false
-            else if @utils.numberOfDecimals(number) > 4
+            else if utilsL.numberOfDecimals(number) > 4
                 return false
         true
 
@@ -63,30 +49,30 @@ class MatchMaker
     # If it is not valid, we send the last valid nums to listener
     # If none valid so far, we make current valid
     receivedMessage: (message) ->
-        console.log("Matchmaker Socket Recieved Message")
-        @currentNums = @utils.convertStringToNumArray(message)
+        #console.log("Matchmaker Socket Recieved Message")
+        @currentNums = utilsL.convertStringToNumArray(message)
         valid = @checkIfNumbersValid(@currentNums)
         if valid
             @lastValidNums = @currentNums
         else
             if typeof @lastValidNums is 'undefined'
-                @currentNums = @utils.convertStringToNumArray(message, 4)
+                @currentNums = utilsL.convertStringToNumArray(message, 4)
                 @lastValidNums = @makeNumsValid(@currentNums)
 
-        @listner.receivedCandidateFromMM(@lastValidNums)
+        @listener.receivedCandidateFromMM(@lastValidNums)
 
     sendMessage: (message) ->
-        console.log("Matchmaker socket sending message")
+        #console.log("Matchmaker socket sending message")
         @client.write(message)
 
     startServer: () ->
         @server = matchmakerSocket
-        @server.on 'connection', (@client) ->
+        @server.on 'connection', (@client) =>
             console.log("Connection Made with matchmaker")
-            @client.on 'data', (data) ->
-                console.log("received mm data")
+            @client.on 'data', (data) =>
+                #console.log("received mm data")
                 @receivedMessage(data)
         @server.listen @MATCHMAKER_PORT
-        console.log("Matchmaker Port started")
+        console.log("Matchmaker Port started on port #{@MATCHMAKER_PORT}")
 
 module.exports = MatchMaker

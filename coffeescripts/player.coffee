@@ -1,26 +1,15 @@
 net = require('net')
+
 Utils = require "./utils"
+utilsL = new Utils
 playerSocket = net.createServer()
 
 class Player
-	constructor: (@listener) ->
+	constructor: () ->
         @utils = new Utils
-        @N = @utils.getN()
-        @HOST = @utils.getHOST()
-        @PLAYER_PORT = @utils.getPLAYER_PORT()
-
-        ###
-        @server = playerSocket
-        @server.on 'connection', (@client) ->
-            console.log("Connection Made with player")
-            @client.on 'data', (data) ->
-                console.log("received player data")
-                @receivedMessage(data)
-
-        @server.listen @PLAYER_PORT
-        console.log("Player Port Started")
-        ###
-        @startServer()
+        @N = @utils.N
+        @HOST = @utils.HOST
+        @PLAYER_PORT = @utils.PLAYER_PORT
 
     checkIfSumToCorrectValues: (numbers) ->
         totalPositiveValue = 0
@@ -28,14 +17,27 @@ class Player
 
         for number in numbers
             if number > 0
-                totalPositiveNumber += number
+                totalPositiveValue += number
             else
-                totalNegativeNumber += number
+                totalNegativeValue += number
 
-        valid = totalPositiveValue is 1 and totalNegativeValue is -1
+        if totalPositiveValue > 0.999999999 and
+                totalNegativeValue < -0.999999999
+            valid = true
+            
+        else
+            console.log("Received an invalid Candidate from Player")
+            console.log("Total positive value is #{totalPositiveValue}")
+            console.log("Total negative value is #{totalNegativeValue}")
+            valid = false
+
+        return valid
+
+    addListener: (@listener) ->
+        console.log("Listener added")
 
     checkIfInitialNumbersAreValid: (initialNumbers) ->
-        valid = briefCheckIfNumbersValid(initialNumbers)
+        valid = @briefCheckIfNumbersValid(initialNumbers)
 
     checkIfChangedFivePercentOfWeights: (numbers) ->
         maxAllowedToChange = @N/20
@@ -59,36 +61,43 @@ class Player
         true
 
     checkIfLatterValuesAreValid: (numbers) ->
-        if not briefCheckIfNumbersValid(numbers)
+        if not @briefCheckIfNumbersValid(numbers)
             return false
-        else if not checkIfChangedFivePercentOfWeights(numbers)
+        else if not @checkIfChangedFivePercentOfWeights(numbers)
             return false
-        else if not checkIfChangedValuesAreMaxTwentyPercentDifferent(numbers)
+        else if not @checkIfChangedValuesAreMaxTwentyPercentDifferent(numbers)
             return false
         else
             return true
 
     briefCheckIfNumbersValid: (numbers) ->
         if numbers.length != @N
+            console.log("Length Incorrect: length is #{numbers.length}")
             return false
-        if not checkIfSumToCorrectValues(numbers)
+        if not @checkIfSumToCorrectValues(numbers)
+            console.log("Sum incorrect")
             return false
 
         for number in numbers
             if number < -1
+                console.log("Number is less than -1, it is #{number}")
                 return false
             else if number > 1
+                console.log("Number is greater than 1, it is #{number}")
                 return false
-            else if @utils.numberOfDecimals(number) > 2
+            else if utilsL.numberOfDecimals(number) > 2
+                console.log("Number has too many decimals, it is #{number}")
                 return false
         true
+
+    toString: -> console.log("Player ToString")
 
     # If valid, we update last valid and send to listner
     # If it is not valid, we send the last valid nums to listener
     # If none valid so far, we make current valid
     receivedMessage: (message) ->
-        console.log("Player Socket Recieved Message")
-        @currentNums = @utils.convertStringToNumArray(message)
+        #console.log("Player Socket Received Message: #{message}")
+        @currentNums = utilsL.convertStringToNumArray(message)
 
         if typeof @lastValidNums is 'undefined'
             valid = @briefCheckIfNumbersValid(@currentNums)
@@ -102,21 +111,22 @@ class Player
             if valid
                 @lastValidNums = @currentNums
 
-        @listner.receivedCandidateFromP(@lastValidNums)
+        @listener.receivedCandidateFromP(@lastValidNums)
 
     sendMessage: (message) ->
-        console.log("player socket sending message")
+        #console.log("player socket sending message")
         @client.write(message)
 
     startServer: () ->
         @server = playerSocket
-        @server.on 'connection', (@client) ->
+        @server.on 'connection', (@client) =>
             console.log("Connection Made with player")
-            @client.on 'data', (data) ->
-                console.log("received player data")
+            @client.on 'data', (data) =>
+
+                #console.log("Player Socket Recieved Message")
                 @receivedMessage(data)
 
         @server.listen @PLAYER_PORT
-        console.log("Player Port Started")
+        console.log("Player Port Started on port #{@PLAYER_PORT}")
 
 module.exports = Player

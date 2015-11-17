@@ -14,6 +14,14 @@ class Game
 
         @maxScore = -100
 
+        @setup()
+
+    setup: ->
+        @matchMaker.addListener(this)
+        @player.addListener(this)
+        @matchMaker.startServer()
+        @player.startServer()
+
     receivedCandidateFromMM: (mmNumbers) ->
         console.log("Received MM candidate")
         if @waitingForMMCandidate
@@ -25,7 +33,7 @@ class Game
         console.log("Received P candidate")
         if @waitingForPCandidate
             @waitingForPCandidate = false
-            @currentPCandidate = mmNumbers
+            @currentPCandidate = pNumbers
             @analyzeGame()
 
     updateMaxValues: (score) ->
@@ -47,27 +55,28 @@ class Game
             mmMessage = ""
 
             for index in [1..20]
-                randomCandidate = createRandomCandidateForMM()
-                mmMessage += scoredCandidateString(randomCandidate, @currentPCandidate)
+                randomCandidate = @createRandomCandidateForMM()
+                mmMessage += @scoredCandidateString(randomCandidate, @currentPCandidate)
             
             @waitingForPCandidate = true
             @waitingForMMCandidate = true
             @turn += 1
             @matchMaker.sendMessage(mmMessage)
+            @player.sendMessage("continue")
 
         # Remaining Turns
         else
             #Calc current Score, send messages, update turn
             @turn += 1
-            score = scoreVector(@currentMMCandidate, @currentPCandidate)
-            updateMaxValues(score)
+            score = @scoreVector(@currentMMCandidate, @currentPCandidate)
+            @updateMaxValues(score)
 
             if score is 1 or @turn is 20
-                endGame()
+                @endGame()
 
             else
                 pMessage = "continue"
-                mmMessage = scoredCandidateString(@currentMMCandidate, @currentPCandidate)
+                mmMessage = @scoredCandidateString(@currentMMCandidate, @currentPCandidate)
                 @waitingForPCandidate = true
                 @waitingForMMCandidate = true
                 @turn += 1
@@ -89,12 +98,13 @@ class Game
         endMessage += "\n\n"
 
         # Last Turn Scores
-        score = scoreVector(@currentMMCandidate, @currentPCandidate)
-        endMessage += "Turn #{@turn}"
+        score = @scoreVector(@currentMMCandidate, @currentPCandidate)
+        endMessage += "Turn #{@turn}\n"
         endMessage += "Last Turn Score: #{score}\n"
         endMessage += "Last Matchmaker Candidate: #{@currentMMCandidate}\n"
         endMessage += "Last Player Candidate: #{@currentPCandidate}\n"
 
+        console.log(endMessage)
         @matchMaker.sendMessage("gameover")
         @player.sendMessage("gameover")
 
@@ -109,7 +119,7 @@ class Game
     # Creates string "x1 x2 x3 x4 | score \n"
     scoredCandidateString: (matchmakerCandidate, playerCandidate = @currentPCandidate) ->
         returnString = ""
-        score = scoreVector(matchmakerCandidate, playerCandidate)
+        score = @scoreVector(matchmakerCandidate, playerCandidate)
         
         for number in matchmakerCandidate
             returnString += number + " "

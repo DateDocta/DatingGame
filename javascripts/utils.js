@@ -3,12 +3,19 @@
   var Utils;
 
   Utils = (function() {
-    function Utils() {
-      this.N = 20;
-      this.HOST = '127.0.0.1';
-      this.MATCHMAKER_PORT = 6969;
-      this.PLAYER_PORT = 9696;
-    }
+    Utils.prototype.N = 20;
+
+    Utils.prototype.HOST = '127.0.0.1';
+
+    Utils.prototype.MATCHMAKER_PORT = 6969;
+
+    Utils.prototype.PLAYER_PORT = 9696;
+
+    function Utils() {}
+
+    Utils.prototype.toString = function() {
+      return console.log("Utils tostring called");
+    };
 
     Utils.prototype.numberOfDecimals = function(number) {
       number = number.toString();
@@ -20,6 +27,7 @@
       if (decimalPoints == null) {
         decimalPoints = 0;
       }
+      numberString = numberString.toString();
       numberArray = [];
       if (numberString) {
         stringArray = numberString.split(" ");
@@ -46,26 +54,6 @@
         returnString += num + " ";
       }
       return returnString;
-    };
-
-    Utils.prototype.toString = function() {
-      return console.log("Accessed in Utils");
-    };
-
-    Utils.prototype.getN = function() {
-      return this.N;
-    };
-
-    Utils.prototype.getHOST = function() {
-      return this.HOST;
-    };
-
-    Utils.prototype.getMATCHMAKER_PORT = function() {
-      return this.MATCHMAKER_PORT;
-    };
-
-    Utils.prototype.getPLAYER_PORT = function() {
-      return this.PLAYER_PORT;
     };
 
     return Utils;

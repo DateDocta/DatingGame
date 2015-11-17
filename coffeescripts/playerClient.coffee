@@ -1,12 +1,14 @@
 console.log("In player Client")
+
 net = require('net')
 Utils = require "./utils"
-utils = new Utils
+@utils = new Utils
+utilsL = @utils
 
-N = utils.getN()
-HOST = utils.getHOST()
-MATCHMAKER_PORT = utils.getMATCHMAKER_PORT()
-PLAYER_PORT = utils.getPLAYER_PORT()
+N = @utils.N
+HOST = @utils.HOST
+MATCHMAKER_PORT = @utils.MATCHMAKER_PORT
+PLAYER_PORT = @utils.PLAYER_PORT
 
 lastReceivedNumbers = []
 lastReceivedScore = 0
@@ -30,16 +32,17 @@ createBasicCandidate = () ->
     candidate
 
 client = net.connect(connectingPort, ->
-    console.log("Player Client Created")
+    console.log("Player client connected on port #{connectingPort.port}")
     candidate = makeCandidate()
-    candidateString = utils.convertNumArrayToFormattedString(candidate)
+    candidateString = utilsL.convertNumArrayToFormattedString(candidate)
     client.write(candidateString))
 
-client.on 'data', (data) ->
-    console.log("Player Client Received Data")
 
-    if data is not "gameover"
-        console.log("Player Client sending data")
+client.on 'data', (data) ->
+    #console.log("Player Client Received Data: #{data}")
+
+    if data != "gameover"
         candidate = makeCandidate()
-        candidateString = utils.convertNumArrayToFormattedString(candidate)
+        candidateString = utilsL.convertNumArrayToFormattedString(candidate)
+        console.log("Player Client sending data")
         client.write(candidateString)
