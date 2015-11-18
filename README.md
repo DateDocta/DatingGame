@@ -96,8 +96,10 @@ message.split(/\D/)
 \D means all non Digit characters
 
 
-If you do this, index 0 to (N-1) will be all the first N scores
-index at (N + 2) will be the score.  Index (N + 5) will be the index of the 
+If you do this, index 0 to (N-1) will be all the first N candidate weights.
+
+
+Index (N + 2) will be the score.  Index (N + 5) will be the index of the 
 first weight of the next Candidate.  You can check the matchMakerClient in function *parseMultipleCandidates* 
 to see how I do this.
 
@@ -154,7 +156,7 @@ If N = 5 and you replace letters into numbers, you could send
 2. node matchmakerClient.js
 
 
-*Note: If you decide you want to use coffeescript, you can go into the coffeescript directory and change the clients in there.  In matchmakerClient and playerClient, I have a **makeCandidate()** function that returns an array of numbers for a basic candidate. You can place your own logic in there if you want to use that code.*
+Note: If you decide you want to use coffeescript, you can go into the coffeescript directory and change the clients in there.  In matchmakerClient and playerClient, I have a **makeCandidate()** function that returns an array of numbers for a basic candidate. You can place your own logic in there if you want to use that code.
 
 
 To compile the coffeescript code, just run "./compile.sh" in a seperate terminal and your code will automatically be compiled into the javascripts directory whenever you save your code
