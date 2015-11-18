@@ -1,14 +1,10 @@
 class Utils
     N: 20
     HOST: '127.0.0.1'
-    MATCHMAKER_PORT: 6969
-    PLAYER_PORT: 9696
+    MATCHMAKER_PORT: 9696
+    PLAYER_PORT: 6969
 
     constructor: () ->
-        #@N = 20
-        #@HOST = '127.0.0.1'
-        #@MATCHMAKER_PORT = 6969
-        #@PLAYER_PORT = 9696
 
     toString: () ->
         console.log("Utils tostring called")

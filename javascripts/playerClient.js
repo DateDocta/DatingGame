@@ -57,11 +57,14 @@
 
   client.on('data', function(data) {
     var candidate, candidateString;
+    data = data.toString();
     if (data !== "gameover") {
       candidate = makeCandidate();
       candidateString = utilsL.convertNumArrayToFormattedString(candidate);
       console.log("Player Client sending data");
       return client.write(candidateString);
+    } else {
+      return console.log("GAMEOVER");
     }
   });
 

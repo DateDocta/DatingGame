@@ -20,7 +20,7 @@
 
     MatchMaker.prototype.addListener = function(listener) {
       this.listener = listener;
-      return console.log("Listener added");
+      return console.log("MM added Listener");
     };
 
     MatchMaker.prototype.checkIfNumbersValid = function(numbers) {

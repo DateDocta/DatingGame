@@ -34,7 +34,6 @@ parseSingleCandidate = (data) ->
     for index in [0..N-1]
         lastReceivedNumbers.push(splitData[index])
 
-    #lastReceivedScore = splitData[splitData.length - 1]
     lastReceivedScore = splitData[N+2]
 
 parseMultipleCandidates = (data) ->

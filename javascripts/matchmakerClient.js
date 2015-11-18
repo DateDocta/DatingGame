@@ -95,12 +95,15 @@
 
   client.on('data', function(data) {
     var candidate, candidateString;
+    data = data.toString();
     if (data !== "gameover") {
       parseData(data);
       candidate = makeCandidate();
       candidateString = utilsL.convertNumArrayToFormattedString(candidate);
       console.log("MM Client sending data");
       return client.write(candidateString);
+    } else {
+      return console.log("GAMEOVER");
     }
   });
 

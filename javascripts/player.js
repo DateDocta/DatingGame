@@ -43,7 +43,7 @@
 
     Player.prototype.addListener = function(listener) {
       this.listener = listener;
-      return console.log("Listener added");
+      return console.log("Player added Listener");
     };
 
     Player.prototype.checkIfInitialNumbersAreValid = function(initialNumbers) {

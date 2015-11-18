@@ -14,8 +14,8 @@
       this.matchMaker = new MatchMaker(this);
       this.player = new Player(this);
       this.N = this.utils.N;
-      this.connectedToMM = false;
-      this.connectedToP = false;
+      this.MisConnected = false;
+      this.PisConnected = false;
       this.waitingForMMCandidate = false;
       this.waitingForPCandidate = true;
       this.turn = 0;
@@ -23,11 +23,24 @@
       this.setup();
     }
 
+    Game.prototype.delay = function(ms, func) {
+      return setTimeout(func, ms);
+    };
+
     Game.prototype.setup = function() {
       this.matchMaker.addListener(this);
       this.player.addListener(this);
-      this.matchMaker.startServer();
-      return this.player.startServer();
+      return this.delay(1000, (function(_this) {
+        return function() {
+          _this.matchMaker.startServer();
+          return _this.player.startServer();
+        };
+      })(this));
+    };
+
+    Game.prototype.checkIfBothPlayersConnected = function() {
+      var value;
+      return value = this.PisConnected && this.MisConnected;
     };
 
     Game.prototype.receivedCandidateFromMM = function(mmNumbers) {
@@ -49,11 +62,14 @@
     };
 
     Game.prototype.connectedToMM = function() {
-      return this.connectedToMM = true;
+      console.log("Game knows MM is connected");
+      this.MisConnected = true;
+      return this.analyzeGame();
     };
 
     Game.prototype.connectedToP = function() {
-      return this.connectedToP = true;
+      console.log("Game knows P is connected");
+      return this.PisConnected = true;
     };
 
     Game.prototype.updateMaxValues = function(score) {
@@ -66,11 +82,20 @@
     };
 
     Game.prototype.analyzeGame = function() {
-      var i, index, mmMessage, pMessage, randomCandidate, score;
+      var bothPlayersConnected, i, index, mmMessage, pMessage, randomCandidate, score;
+      if (!this.checkIfBothPlayersConnected()) {
+        return;
+      }
       if (this.waitingForMMCandidate || this.waitingForPCandidate) {
         return;
       }
       if (this.turn === 0) {
+        while (true) {
+          bothPlayersConnected = this.checkIfBothPlayersConnected();
+          if (bothPlayersConnected) {
+            break;
+          }
+        }
         mmMessage = "";
         for (index = i = 1; i <= 20; index = ++i) {
           randomCandidate = this.createRandomCandidateForMM();
@@ -82,12 +107,12 @@
         this.matchMaker.sendMessage(mmMessage);
         return this.player.sendMessage("continue");
       } else {
-        this.turn += 1;
         score = this.scoreVector(this.currentMMCandidate, this.currentPCandidate);
         this.updateMaxValues(score);
-        if (score > 0.9999999999 || this.turn === 20) {
+        if (score > 0.99999999 || this.turn === 20) {
           return this.endGame();
         } else {
+          this.turn += 1;
           pMessage = "continue";
           mmMessage = this.scoredCandidateString(this.currentMMCandidate, this.currentPCandidate);
           this.waitingForPCandidate = true;
@@ -101,18 +126,18 @@
     Game.prototype.endGame = function() {
       var endMessage, score;
       endMessage = "";
-      endMessage += "Ultimate Score is (" + this.maxScore + ", " + this.turn + ")";
+      endMessage += "Ultimate Score is (" + this.maxScore + ", " + this.turn + ")\n\n";
       endMessage += "Breakdown of Score\n";
       endMessage += "-----------------------------------\n\n";
-      endMessage += "Turn of Max Score: " + this.maxScoreTurn + "\n";
-      endMessage += "Max Score: " + this.maxScore + "\n";
-      endMessage += "Matchmaker Candidate with Max Score: " + this.maxMMVector + "\n";
+      endMessage += "Turn of Max Score: " + this.maxScoreTurn + "\n\n";
+      endMessage += "Max Score: " + this.maxScore + "\n\n";
+      endMessage += "Matchmaker Candidate with Max Score: " + this.maxMMVector + "\n\n";
       endMessage += "Player Candidate at turn of Max Score: " + this.maxPVector + "\n";
       endMessage += "\n\n";
       score = this.scoreVector(this.currentMMCandidate, this.currentPCandidate);
       endMessage += "Turn " + this.turn + "\n";
-      endMessage += "Last Turn Score: " + score + "\n";
-      endMessage += "Last Matchmaker Candidate: " + this.currentMMCandidate + "\n";
+      endMessage += "Last Turn Score: " + score + "\n\n";
+      endMessage += "Last Matchmaker Candidate: " + this.currentMMCandidate + "\n\n";
       endMessage += "Last Player Candidate: " + this.currentPCandidate + "\n";
       console.log(endMessage);
       this.matchMaker.sendMessage("gameover");
