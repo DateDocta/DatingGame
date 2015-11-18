@@ -91,9 +91,9 @@ It will look like this
 If you split with regex, you can split on all non Digit chars like this.
 
 
-\D means all non Digit characters
-
 message.split(/\D/)
+
+\D means all non Digit characters
 
 
 If you do this, index 0 to (N-1) will be all the first N scores
