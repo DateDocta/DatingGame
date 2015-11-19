@@ -154,7 +154,7 @@
         value = vectorA[index];
         score += value * vectorB[index];
       }
-      return score;
+      return score = score.toFixed(4);
     };
 
     Game.prototype.scoredCandidateString = function(matchmakerCandidate, playerCandidate) {

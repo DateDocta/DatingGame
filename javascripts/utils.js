@@ -7,9 +7,9 @@
 
     Utils.prototype.HOST = '127.0.0.1';
 
-    Utils.prototype.MATCHMAKER_PORT = 6969;
+    Utils.prototype.MATCHMAKER_PORT = 9696;
 
-    Utils.prototype.PLAYER_PORT = 9696;
+    Utils.prototype.PLAYER_PORT = 6969;
 
     function Utils() {}
 

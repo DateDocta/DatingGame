@@ -149,7 +149,7 @@ class Game
         score = 0
         for value, index in vectorA
             score += value * vectorB[index]
-        score
+        score = score.toFixed(4)
 
     # Creates string "x1 x2 x3 x4 | score \n"
     scoredCandidateString: (matchmakerCandidate, playerCandidate = @currentPCandidate) ->
