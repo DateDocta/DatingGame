@@ -13,6 +13,17 @@ Below we have details about
 
 If you notice anything wrong with the code or have any questions, feel free to make an issue on the github repo, or to write to us in the slack channel
 
+## Utils
+
+To change settings regarding the game, such as the value for N or the port numbers, you can change the `utils` file and the value for the appropriate variable.
+
+```coffeescript
+N: 20
+HOST: '127.0.0.1'
+MATCHMAKER_PORT: 9696
+PLAYER_PORT: 6969
+```
+
 
 ## Data Passed Around
 
