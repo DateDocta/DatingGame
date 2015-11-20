@@ -18,11 +18,12 @@ class Utils
         numberArray = []
         if numberString
             stringArray = numberString.split(" ")
+            size = stringArray.length
             if decimalPoints is 0
-                for index in [0..@N-1]
+                for index in [0..size-1]
                     numberArray.push(parseFloat(stringArray[index]))
             else
-                for index in [0..@N-1]
+                for index in [0..size-1]
                     numberArray.push(parseFloat(stringArray[index]).toFixed(decimalPoints))
 
             return numberArray

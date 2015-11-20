@@ -23,7 +23,7 @@
     };
 
     Utils.prototype.convertStringToNumArray = function(numberString, decimalPoints) {
-      var i, index, j, numberArray, ref, ref1, stringArray;
+      var i, index, j, numberArray, ref, ref1, size, stringArray;
       if (decimalPoints == null) {
         decimalPoints = 0;
       }
@@ -31,12 +31,13 @@
       numberArray = [];
       if (numberString) {
         stringArray = numberString.split(" ");
+        size = stringArray.length;
         if (decimalPoints === 0) {
-          for (index = i = 0, ref = this.N - 1; 0 <= ref ? i <= ref : i >= ref; index = 0 <= ref ? ++i : --i) {
+          for (index = i = 0, ref = size - 1; 0 <= ref ? i <= ref : i >= ref; index = 0 <= ref ? ++i : --i) {
             numberArray.push(parseFloat(stringArray[index]));
           }
         } else {
-          for (index = j = 0, ref1 = this.N - 1; 0 <= ref1 ? j <= ref1 : j >= ref1; index = 0 <= ref1 ? ++j : --j) {
+          for (index = j = 0, ref1 = size - 1; 0 <= ref1 ? j <= ref1 : j >= ref1; index = 0 <= ref1 ? ++j : --j) {
             numberArray.push(parseFloat(stringArray[index]).toFixed(decimalPoints));
           }
         }
