@@ -11,7 +11,7 @@
 
     Utils.prototype.PLAYER_PORT = 6969;
 
-    Utils.epsilon = 0.000000000000001;
+    Utils.epsilon = 0.000001;
 
     function Utils() {}
 
