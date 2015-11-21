@@ -110,7 +110,7 @@
       } else {
         score = this.scoreVector(this.currentMMCandidate, this.currentPCandidate);
         this.updateMaxValues(score);
-        if (score > 0.99999999 || this.turn === 20) {
+        if (score > 0.99999999 || this.turn === 20 || this.matchMaker.timed_out() || this.player.timed_out()) {
           return this.endGame();
         } else {
           this.turn += 1;
@@ -127,6 +127,12 @@
     Game.prototype.endGame = function() {
       var endMessage, score;
       endMessage = "";
+      if (this.matchMaker.timed_out()) {
+        endMessage += "Matchmaker timed out\n\n";
+      }
+      if (this.player.timed_out()) {
+        endMessage += "Player timed out\n\n";
+      }
       endMessage += "Ultimate Score is (" + this.maxScore + ", " + this.turn + ")\n\n";
       endMessage += "Breakdown of Score\n";
       endMessage += "-----------------------------------\n\n";

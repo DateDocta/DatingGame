@@ -10,6 +10,8 @@ class Player
         @N = @utils.N
         @HOST = @utils.HOST
         @PLAYER_PORT = @utils.PLAYER_PORT
+        @time_left_in_seconds = 120
+        console.log(@time_left_in_seconds)
 
     checkIfSumToCorrectValues: (numbers) ->
         totalPositiveValue = 0
@@ -111,11 +113,17 @@ class Player
             if valid
                 @lastValidNums = @currentNums
 
+        time_message_received = new Date().getTime()
+        total_turnaround_time = (time_message_received - @time_message_sent) / 1000
+        total_turnaround_time = 0 if isNaN(total_turnaround_time)
+        @time_left_in_seconds = Math.ceil(@time_left_in_seconds - total_turnaround_time)
+        console.log("Time left for Player in seconds: " + @time_left_in_seconds)
         @listener.receivedCandidateFromP(@lastValidNums)
 
     sendMessage: (message) ->
         #console.log("player socket sending message")
         @client.write(message)
+        @time_message_sent = new Date().getTime()
 
     startServer: () ->
         @server = playerSocket
@@ -128,5 +136,8 @@ class Player
 
         @server.listen @PLAYER_PORT
         console.log("Player Port Started on port #{@PLAYER_PORT}")
+
+    timed_out: () ->
+      return @time_left_in_seconds < 0
 
 module.exports = Player

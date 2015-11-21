@@ -9,6 +9,7 @@ class MatchMaker
         @N = @utils.N
         @HOST = @utils.HOST
         @MATCHMAKER_PORT = @utils.MATCHMAKER_PORT
+        @time_left_in_seconds = 120
 
     addListener: (@listener) ->
         console.log("MM added Listener")
@@ -59,11 +60,16 @@ class MatchMaker
                 @currentNums = utilsL.convertStringToNumArray(message, 4)
                 @lastValidNums = @makeNumsValid(@currentNums)
 
+        time_message_received = new Date().getTime()
+        total_turnaround_time = (time_message_received - @time_message_sent) / 1000
+        @time_left_in_seconds = Math.ceil(@time_left_in_seconds - total_turnaround_time)
+        console.log("Time left for MatchMaker in seconds: " + @time_left_in_seconds)
         @listener.receivedCandidateFromMM(@lastValidNums)
 
     sendMessage: (message) ->
         #console.log("Matchmaker socket sending message")
         @client.write(message)
+        @time_message_sent = new Date().getTime()
 
     startServer: () ->
         @server = matchmakerSocket
@@ -74,5 +80,9 @@ class MatchMaker
                 @receivedMessage(data)
         @server.listen @MATCHMAKER_PORT
         console.log("Matchmaker Port started on port #{@MATCHMAKER_PORT}")
+
+    timed_out: () ->
+      return @time_left_in_seconds < 0
+
 
 module.exports = MatchMaker
