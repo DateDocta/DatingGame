@@ -12,6 +12,7 @@ class Game
         @PisConnected = false
         @waitingForMMCandidate = false
         @waitingForPCandidate = true
+        @epsilon = 0.000000000000001
         @turn = 0
 
         @maxScore = -100
@@ -144,7 +145,7 @@ class Game
 
     # Dot Product
     scoreVector: (vectorA, vectorB) ->
-        if vectorA.length is not vectorB.length
+        if vectorA.length isnt vectorB.length
             throw "can't dot product different length arrays"
         score = 0
         for value, index in vectorA

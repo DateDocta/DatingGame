@@ -46,7 +46,7 @@ class MatchMaker
         numbers
 
     # If valid, we update last valid and send to listner
-    # If it is not valid, we send the last valid nums to listener
+    # If it isnt valid, we send the last valid nums to listener
     # If none valid so far, we make current valid
     receivedMessage: (message) ->
         #console.log("Matchmaker Socket Recieved Message")

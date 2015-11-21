@@ -44,7 +44,7 @@ class Player
         totalChanged = 0
 
         for index in [0..numbers.length - 1]
-            if numbers[index] is not @lastValidNums[index]
+            if numbers[index] isnt @lastValidNums[index]
                 totalChanged += 1
 
         valid = totalChanged <= maxAllowedToChange
@@ -53,7 +53,7 @@ class Player
         for index in [0..numbers.length - 1]
             currentTestingNum = numbers[index]
             currentValidNum = @lastValidNums[index]
-            if currentTestingNum is not currentValidNum
+            if currentTestingNum isnt currentValidNum
                 percentValue = currentTestingNum/currentValidNum
                 if percentValue < 0.8 or percentValue > 1.2
                     return false
@@ -93,7 +93,7 @@ class Player
     toString: -> console.log("Player ToString")
 
     # If valid, we update last valid and send to listner
-    # If it is not valid, we send the last valid nums to listener
+    # If it isnt valid, we send the last valid nums to listener
     # If none valid so far, we make current valid
     receivedMessage: (message) ->
         #console.log("Player Socket Received Message: #{message}")
