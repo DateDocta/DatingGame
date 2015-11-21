@@ -16,6 +16,8 @@
       this.N = this.utils.N;
       this.HOST = this.utils.HOST;
       this.PLAYER_PORT = this.utils.PLAYER_PORT;
+      this.time_left_in_seconds = 120;
+      console.log(this.time_left_in_seconds);
     }
 
     Player.prototype.checkIfSumToCorrectValues = function(numbers) {
@@ -121,7 +123,7 @@
     };
 
     Player.prototype.receivedMessage = function(message) {
-      var valid;
+      var time_message_received, total_turnaround_time, valid;
       this.currentNums = utilsL.convertStringToNumArray(message);
       if (typeof this.lastValidNums === 'undefined') {
         valid = this.briefCheckIfNumbersValid(this.currentNums);
@@ -137,11 +139,19 @@
           this.lastValidNums = this.currentNums;
         }
       }
+      time_message_received = new Date().getTime();
+      total_turnaround_time = (time_message_received - this.time_message_sent) / 1000;
+      if (isNaN(total_turnaround_time)) {
+        total_turnaround_time = 0;
+      }
+      this.time_left_in_seconds = Math.ceil(this.time_left_in_seconds - total_turnaround_time);
+      console.log("Time left for Player in seconds: " + this.time_left_in_seconds);
       return this.listener.receivedCandidateFromP(this.lastValidNums);
     };
 
     Player.prototype.sendMessage = function(message) {
-      return this.client.write(message);
+      this.client.write(message);
+      return this.time_message_sent = new Date().getTime();
     };
 
     Player.prototype.startServer = function() {
@@ -157,6 +167,10 @@
       })(this));
       this.server.listen(this.PLAYER_PORT);
       return console.log("Player Port Started on port " + this.PLAYER_PORT);
+    };
+
+    Player.prototype.timed_out = function() {
+      return this.time_left_in_seconds < 0;
     };
 
     return Player;

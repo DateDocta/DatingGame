@@ -105,7 +105,7 @@ class Game
             score = @scoreVector(@currentMMCandidate, @currentPCandidate)
             @updateMaxValues(score)
 
-            if score > 0.99999999 or @turn is 20
+            if score > 0.99999999 or @turn is 20 or @matchMaker.timed_out() or @player.timed_out()
                 @endGame()
 
             else
@@ -121,6 +121,11 @@ class Game
     endGame: ->
         # Max Scores
         endMessage = ""
+        if(@matchMaker.timed_out())
+          endMessage += "Matchmaker timed out\n\n"
+        if(@player.timed_out())
+          endMessage += "Player timed out\n\n"
+
         endMessage += "Ultimate Score is (#{@maxScore}, #{@turn})\n\n"
         endMessage += "Breakdown of Score\n"
         endMessage += "-----------------------------------\n\n"
