@@ -16,6 +16,7 @@
       this.N = this.utils.N;
       this.HOST = this.utils.HOST;
       this.MATCHMAKER_PORT = this.utils.MATCHMAKER_PORT;
+      this.time_left_in_seconds = 120;
     }
 
     MatchMaker.prototype.addListener = function(listener) {
@@ -64,7 +65,7 @@
     };
 
     MatchMaker.prototype.receivedMessage = function(message) {
-      var valid;
+      var time_message_received, total_turnaround_time, valid;
       this.currentNums = utilsL.convertStringToNumArray(message);
       valid = this.checkIfNumbersValid(this.currentNums);
       if (valid) {
@@ -75,11 +76,16 @@
           this.lastValidNums = this.makeNumsValid(this.currentNums);
         }
       }
+      time_message_received = new Date().getTime();
+      total_turnaround_time = (time_message_received - this.time_message_sent) / 1000;
+      this.time_left_in_seconds = Math.ceil(this.time_left_in_seconds - total_turnaround_time);
+      console.log("Time left for MatchMaker in seconds: " + this.time_left_in_seconds);
       return this.listener.receivedCandidateFromMM(this.lastValidNums);
     };
 
     MatchMaker.prototype.sendMessage = function(message) {
-      return this.client.write(message);
+      this.client.write(message);
+      return this.time_message_sent = new Date().getTime();
     };
 
     MatchMaker.prototype.startServer = function() {
@@ -95,6 +101,10 @@
       })(this));
       this.server.listen(this.MATCHMAKER_PORT);
       return console.log("Matchmaker Port started on port " + this.MATCHMAKER_PORT);
+    };
+
+    MatchMaker.prototype.timed_out = function() {
+      return this.time_left_in_seconds < 0;
     };
 
     return MatchMaker;
