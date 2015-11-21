@@ -3,6 +3,7 @@ class Utils
     HOST: '127.0.0.1'
     MATCHMAKER_PORT: 9696
     PLAYER_PORT: 6969
+    @epsilon = 0.000000000000001
 
     constructor: () ->
 

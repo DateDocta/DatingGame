@@ -12,7 +12,7 @@ class Game
         @PisConnected = false
         @waitingForMMCandidate = false
         @waitingForPCandidate = true
-        @epsilon = 0.000000000000001
+        @epsilon = @utils.epsilon
         @turn = 0
 
         @maxScore = -100
@@ -106,7 +106,8 @@ class Game
             score = @scoreVector(@currentMMCandidate, @currentPCandidate)
             @updateMaxValues(score)
 
-            if score > 0.99999999 or @turn is 20 or @matchMaker.timed_out() or @player.timed_out()
+            if Math.abs(score -1) < @epsilon or @turn is 20 or
+                    @matchMaker.timed_out() or @player.timed_out()
                 @endGame()
 
             else

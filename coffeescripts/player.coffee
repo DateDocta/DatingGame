@@ -5,8 +5,9 @@ utilsL = new Utils
 playerSocket = net.createServer()
 
 class Player
-	constructor: () ->
+    constructor: () ->
         @utils = new Utils
+        @epsilon = @utils.epsilon
         @N = @utils.N
         @HOST = @utils.HOST
         @PLAYER_PORT = @utils.PLAYER_PORT
@@ -23,17 +24,16 @@ class Player
             else
                 totalNegativeValue += number
 
-        if totalPositiveValue > 0.999999999 and
-                totalNegativeValue < -0.999999999
+        if Math.abs(totalPositiveValue - 1) < @epsilon and
+                Math.abs(totalNegativeValue + 1) < @epsilon
             valid = true
-            
+
         else
             console.log("Received an invalid Candidate from Player")
             console.log("Total positive value is #{totalPositiveValue}")
             console.log("Total negative value is #{totalNegativeValue}")
             valid = false
-
-        return valid
+          valid
 
     addListener: (@listener) ->
         console.log("Player added Listener")

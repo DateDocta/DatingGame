@@ -13,6 +13,7 @@
   Player = (function() {
     function Player() {
       this.utils = new Utils;
+      this.epsilon = this.utils.epsilon;
       this.N = this.utils.N;
       this.HOST = this.utils.HOST;
       this.PLAYER_PORT = this.utils.PLAYER_PORT;
@@ -32,7 +33,7 @@
           totalNegativeValue += number;
         }
       }
-      if (totalPositiveValue > 0.999999999 && totalNegativeValue < -0.999999999) {
+      if (Math.abs(totalPositiveValue - 1) < this.epsilon && Math.abs(totalNegativeValue + 1) < this.epsilon) {
         valid = true;
       } else {
         console.log("Received an invalid Candidate from Player");
