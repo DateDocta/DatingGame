@@ -56,7 +56,7 @@
       maxAllowedToChange = this.N / 20;
       totalChanged = 0;
       for (index = i = 0, ref = numbers.length - 1; 0 <= ref ? i <= ref : i >= ref; index = 0 <= ref ? ++i : --i) {
-        if (numbers[index] === !this.lastValidNums[index]) {
+        if (numbers[index] !== this.lastValidNums[index]) {
           totalChanged += 1;
         }
       }
@@ -68,7 +68,7 @@
       for (index = i = 0, ref = numbers.length - 1; 0 <= ref ? i <= ref : i >= ref; index = 0 <= ref ? ++i : --i) {
         currentTestingNum = numbers[index];
         currentValidNum = this.lastValidNums[index];
-        if (currentTestingNum === !currentValidNum) {
+        if (currentTestingNum !== currentValidNum) {
           percentValue = currentTestingNum / currentValidNum;
           if (percentValue < 0.8 || percentValue > 1.2) {
             return false;

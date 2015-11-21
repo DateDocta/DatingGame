@@ -18,6 +18,7 @@
       this.PisConnected = false;
       this.waitingForMMCandidate = false;
       this.waitingForPCandidate = true;
+      this.epsilon = 0.000000000000001;
       this.turn = 0;
       this.maxScore = -100;
       this.setup();
@@ -146,7 +147,7 @@
 
     Game.prototype.scoreVector = function(vectorA, vectorB) {
       var i, index, len, score, value;
-      if (vectorA.length === !vectorB.length) {
+      if (vectorA.length !== vectorB.length) {
         throw "can't dot product different length arrays";
       }
       score = 0;
