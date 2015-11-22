@@ -106,7 +106,7 @@ class Game
             score = @scoreVector(@currentMMCandidate, @currentPCandidate)
             @updateMaxValues(score)
 
-            if Math.abs(score -1) < @epsilon or @turn is 20 or
+            if Math.abs(score - 1) < @epsilon or @turn is 20 or
                     @matchMaker.timed_out() or @player.timed_out()
                 @endGame()
 

@@ -110,7 +110,7 @@
       } else {
         score = this.scoreVector(this.currentMMCandidate, this.currentPCandidate);
         this.updateMaxValues(score);
-        if (Math.abs(score(-1)) < this.epsilon || this.turn === 20 || this.matchMaker.timed_out() || this.player.timed_out()) {
+        if (Math.abs(score - 1) < this.epsilon || this.turn === 20 || this.matchMaker.timed_out() || this.player.timed_out()) {
           return this.endGame();
         } else {
           this.turn += 1;
