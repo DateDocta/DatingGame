@@ -18,7 +18,6 @@
       this.HOST = this.utils.HOST;
       this.PLAYER_PORT = this.utils.PLAYER_PORT;
       this.time_left_in_seconds = 120;
-      console.log(this.time_left_in_seconds);
     }
 
     Player.prototype.checkIfSumToCorrectValues = function(numbers) {

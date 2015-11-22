@@ -3,7 +3,7 @@
   var Utils;
 
   Utils = (function() {
-    Utils.prototype.N = 50;
+    Utils.prototype.N = 20;
 
     Utils.prototype.HOST = '127.0.0.1';
 
