@@ -12,7 +12,7 @@ class Game
         @PisConnected = false
         @waitingForMMCandidate = false
         @waitingForPCandidate = true
-        @epsilon = @utils.epsilon
+        @epsilon = @utils.EPSILON
         @turn = 0
 
         @maxScore = -100
