@@ -177,6 +177,21 @@ class Game
 
     updateGUI: (mmCandidate, pCandidate, score) ->
         data = []
-        #for index in [0..@N-1]
+        for index in [0..@N-1]
+            currentWeight = []
+            vAndF =
+                v: [index + 8, 0,0]
+                f: "Weight #{index}"
+
+            mWeight = mmCandidate[index]
+            pWeight = pCandidate[index]
+            currentWeight.push(vAndF)
+            currentWeight.push(mWeight)
+            currentWeight.push(pWeight)
+            data.push(currentWeight)
+
+        console.log("weight data is: ")
+        console.log(data)
+        console.log("Score is: #{score}")
 
 module.exports = Game

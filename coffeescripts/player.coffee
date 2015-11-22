@@ -31,6 +31,7 @@ class Player
             console.log("Received an invalid Candidate from Player")
             console.log("Total positive value is #{totalPositiveValue}")
             console.log("Total negative value is #{totalNegativeValue}")
+            console.log("Epsilon is #{utilsL.epsilon}")
             valid = false
           valid
 

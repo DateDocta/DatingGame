@@ -189,8 +189,24 @@
     };
 
     Game.prototype.updateGUI = function(mmCandidate, pCandidate, score) {
-      var data;
-      return data = [];
+      var currentWeight, data, i, index, mWeight, pWeight, ref, vAndF;
+      data = [];
+      for (index = i = 0, ref = this.N - 1; 0 <= ref ? i <= ref : i >= ref; index = 0 <= ref ? ++i : --i) {
+        currentWeight = [];
+        vAndF = {
+          v: [index + 8, 0, 0],
+          f: "Weight " + index
+        };
+        mWeight = mmCandidate[index];
+        pWeight = pCandidate[index];
+        currentWeight.push(vAndF);
+        currentWeight.push(mWeight);
+        currentWeight.push(pWeight);
+        data.push(currentWeight);
+      }
+      console.log("weight data is: ");
+      console.log(data);
+      return console.log("Score is: " + score);
     };
 
     return Game;
