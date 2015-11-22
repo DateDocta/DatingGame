@@ -18,7 +18,7 @@ class Utils
         numberString = numberString.toString()
         numberArray = []
         if numberString
-            stringArray = numberString.split(" ")
+            stringArray = numberString.trim().split(" ")
             size = stringArray.length
             if decimalPoints is 0
                 for index in [0..size-1]

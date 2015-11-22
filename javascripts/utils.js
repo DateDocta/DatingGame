@@ -32,7 +32,7 @@
       numberString = numberString.toString();
       numberArray = [];
       if (numberString) {
-        stringArray = numberString.split(" ");
+        stringArray = numberString.trim().split(" ");
         size = stringArray.length;
         if (decimalPoints === 0) {
           for (index = i = 0, ref = size - 1; 0 <= ref ? i <= ref : i >= ref; index = 0 <= ref ? ++i : --i) {
