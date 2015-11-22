@@ -110,7 +110,8 @@
       } else {
         score = this.scoreVector(this.currentMMCandidate, this.currentPCandidate);
         this.updateMaxValues(score);
-        if (Math.abs(score(-1)) < this.epsilon || this.turn === 20 || this.matchMaker.timed_out() || this.player.timed_out()) {
+        this.updateGUI(this.currentMMCandidate, this.currentPCandidate, score);
+        if (Math.abs(score - 1) < this.epsilon || this.turn === 20 || this.matchMaker.timed_out() || this.player.timed_out()) {
           return this.endGame();
         } else {
           this.turn += 1;
@@ -185,6 +186,11 @@
         numberArray.push(Math.random().toFixed(4));
       }
       return numberArray;
+    };
+
+    Game.prototype.updateGUI = function(mmCandidate, pCandidate, score) {
+      var data;
+      return data = [];
     };
 
     return Game;

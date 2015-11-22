@@ -105,8 +105,9 @@ class Game
             #Calc current Score, send messages, update turn
             score = @scoreVector(@currentMMCandidate, @currentPCandidate)
             @updateMaxValues(score)
+            @updateGUI(@currentMMCandidate, @currentPCandidate, score)
 
-            if Math.abs(score -1) < @epsilon or @turn is 20 or
+            if Math.abs(score - 1) < @epsilon or @turn is 20 or
                     @matchMaker.timed_out() or @player.timed_out()
                 @endGame()
 
@@ -173,5 +174,9 @@ class Game
         for index in [1..@N]
             numberArray.push(Math.random().toFixed(4))
         numberArray
+
+    updateGUI: (mmCandidate, pCandidate, score) ->
+        data = []
+        #for index in [0..@N-1]
 
 module.exports = Game

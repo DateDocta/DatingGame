@@ -1,4 +1,3 @@
-
 Player = require "./player"
 MatchMaker = require "./matchmaker"
 Utils = require "./utils"
@@ -11,7 +10,6 @@ testString2 = "-0.58 0.52 0.51 -0.52 0.51 0.51 -0.57 0.55 -0.59 0.55 -0.5 0.53 -
 
 testNumbers = utilsL.convertStringToNumArray(testString)
 testNumbers2 = utilsL.convertStringToNumArray(testString2)
-
 
 console.log("Test numbers length is #{testNumbers2.length}")
 console.log("Numbers are: ")
