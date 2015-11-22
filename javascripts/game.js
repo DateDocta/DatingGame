@@ -18,7 +18,7 @@
       this.PisConnected = false;
       this.waitingForMMCandidate = false;
       this.waitingForPCandidate = true;
-      this.epsilon = this.utils.epsilon;
+      this.epsilon = this.utils.EPSILON;
       this.turn = 0;
       this.maxScore = -100;
       this.setup();
