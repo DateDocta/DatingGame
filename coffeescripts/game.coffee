@@ -14,12 +14,25 @@ class Game
         @waitingForPCandidate = true
         @epsilon = @utils.EPSILON
         @turn = 0
+        server = require('websocket').server
+        http = require('http');
+        @socket = new server({httpServer: http.createServer().listen(1990)})
+        @connection
+        @socket.on 'request', (request) =>
+          @connection = request.accept(null, request.origin)
+          # @connection.on 'message', (message) =>
+          #   @tester()
 
         @maxScore = -100
 
         @setup()
 
     delay: (ms, func) -> setTimeout func, ms
+
+
+
+    broadcast_message: (message) ->
+      @connection.send(message) if @connection?
 
     setup: ->
         @matchMaker.addListener(this)
@@ -196,5 +209,7 @@ class Game
         dataWithScoreObj =
             data: data
             score: score
+
+        @broadcast_message(JSON.stringify(dataWithScoreObj))
 
 module.exports = Game
