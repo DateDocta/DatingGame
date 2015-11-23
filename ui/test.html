@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <title>WebSockets Example - jsFiddle demo by bmknight</title>
+  <script type='text/javascript' src='/js/lib/dummy.js'></script>
+  <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+  <link rel="stylesheet" type="text/css" href="/css/normalize.css">
+  <link rel="stylesheet" type="text/css" href="/css/result-light.css">
+  <style type='text/css'>
+    body {
+      font-family: sans-serif;
+      padding: 10px;
+    }
+
+    h1 {
+      font-weight: bold;
+      margin-bottom: 8px;
+    }
+
+    label {
+      font-size: small;
+    }
+
+    #controls {
+      padding-bottom: 10px;
+      margin-bottom: 10px;
+      border-bottom: 1px solid #000;
+    }
+  </style>
+  <script>
+  var divs = 0;
+  google.load('visualization', '1', {
+    packages: ['corechart', 'bar']
+  });
+  // google.setOnLoadCallback(drawStacked);
+
+  function drawStacked(data_payload) {
+    var data = new google.visualization.DataTable();
+    data.addColumn('timeofday', 'Attribute');
+    data.addColumn('number', 'Player Candidate');
+    data.addColumn('number', 'MatchMaker Candidate');
+
+    data.addRows(data_payload);
+
+    var options = {
+      title: 'Dating Game',
+      isStacked: false,
+      hAxis: {
+        title: 'Attributes',
+        viewWindow: {
+          min: [7, 30, 0],
+          max: [24, 30, 0]
+        }
+      },
+      vAxis: {
+        title: 'Rating (range from [-1,1])'
+      }
+    };
+
+    var iDiv = document.createElement('div');
+    iDiv.id = "newdiv" + divs;
+    divs = divs + 1;
+    iDiv.className = 'block';
+    document.getElementById('chart_divs').appendChild(iDiv);
+    var chart2 = new google.visualization.ColumnChart(document.getElementById(iDiv.id));
+    chart2.draw(data, options);
+  }
+  </script>
+  <script type='text/javascript'>
+    //<![CDATA[
+
+
+    window.onload = function() {
+      if (!window.WebSocket) {
+        alert("Your browser does not support the WebSocket API!");
+      } else {
+        var websocketurl = "ws://localhost:1990";
+        var connstatus = document.getElementById("connectionstatus");
+        var infodiv = document.getElementById("info");
+
+        socket = new WebSocket(websocketurl);
+
+        socket.onopen = function() {
+          connstatus.innerHTML = "Connected!";
+        };
+
+        socket.onclose = function() {
+          connstatus.innerHTML = "Disconnected";
+        };
+
+        socket.onmessage = function(message) {
+          var parsed_data = JSON.parse(message.data);
+          var data = parsed_data.data;
+          var score = parsed_data.score;
+
+          drawStacked(data);
+          window.scrollTo(0,document.body.scrollHeight);
+        };
+      }
+
+      function closeConnection() {
+        if (socket) {
+          socket.close();
+        }
+      }
+    }
+  </script>
+</head>
+
+<body>
+  <h1>Dating Game</h1>
+  <div id="info">
+    <p>
+      <strong>Status: </strong>
+      <span id="connectionstatus">Disconnected</span>
+    </p>
+  </div>
+  <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+  <div id="chart_divs">
+    <div id="chart_div"></div>
+  </div>
+  <br />
+  <br />
+</body>
+
+</html>
