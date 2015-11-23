@@ -179,8 +179,11 @@ class Game
         data = []
         for index in [0..@N-1]
             currentWeight = []
+            vArray = [index + 8, 0, 0]
+            console.log(vArray)
+            
             vAndF =
-                v: [index + 8, 0,0]
+                v: vArray
                 f: "Weight #{index}"
 
             mWeight = mmCandidate[index]
@@ -190,8 +193,8 @@ class Game
             currentWeight.push(pWeight)
             data.push(currentWeight)
 
-        console.log("weight data is: ")
-        console.log(data)
-        console.log("Score is: #{score}")
+        #console.log("weight data is: ")
+        #console.log(data)
+        #console.log("Score is: #{score}")
 
 module.exports = Game

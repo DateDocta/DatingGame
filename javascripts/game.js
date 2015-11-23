@@ -189,12 +189,14 @@
     };
 
     Game.prototype.updateGUI = function(mmCandidate, pCandidate, score) {
-      var currentWeight, data, i, index, mWeight, pWeight, ref, vAndF;
+      var currentWeight, data, i, index, mWeight, pWeight, ref, vAndF, vArray;
       data = [];
       for (index = i = 0, ref = this.N - 1; 0 <= ref ? i <= ref : i >= ref; index = 0 <= ref ? ++i : --i) {
         currentWeight = [];
+        vArray = [index + 8, 0, 0];
+        console.log(vArray);
         vAndF = {
-          v: [index + 8, 0, 0],
+          v: vArray,
           f: "Weight " + index
         };
         mWeight = mmCandidate[index];

@@ -59,7 +59,7 @@
       maxAllowedToChange = this.N / 20;
       totalChanged = 0;
       for (index = i = 0, ref = numbers.length - 1; 0 <= ref ? i <= ref : i >= ref; index = 0 <= ref ? ++i : --i) {
-        if (numbers[index] !== this.lastValidNums[index]) {
+        if (numbers[index] !== this.initialValidNums[index]) {
           totalChanged += 1;
         }
       }
@@ -70,7 +70,7 @@
       var currentTestingNum, currentValidNum, i, index, percentValue, ref;
       for (index = i = 0, ref = numbers.length - 1; 0 <= ref ? i <= ref : i >= ref; index = 0 <= ref ? ++i : --i) {
         currentTestingNum = numbers[index];
-        currentValidNum = this.lastValidNums[index];
+        currentValidNum = this.initialValidNums[index];
         if (currentTestingNum !== currentValidNum) {
           percentValue = currentTestingNum / currentValidNum;
           if (percentValue < 0.8 || percentValue > 1.2) {
@@ -130,6 +130,7 @@
         valid = this.briefCheckIfNumbersValid(this.currentNums);
         if (valid) {
           this.lastValidNums = this.currentNums;
+          this.initialValidNums = this.currentNums;
         } else {
           console.log("FIRST RECEIVED NUMBERS FROM PLAYER NOT VALID");
           return;

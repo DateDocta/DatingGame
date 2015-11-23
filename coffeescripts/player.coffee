@@ -46,7 +46,7 @@ class Player
         totalChanged = 0
 
         for index in [0..numbers.length - 1]
-            if numbers[index] isnt @lastValidNums[index]
+            if numbers[index] isnt @initialValidNums[index]
                 totalChanged += 1
 
         valid = totalChanged <= maxAllowedToChange
@@ -54,7 +54,7 @@ class Player
     checkIfChangedValuesAreMaxTwentyPercentDifferent: (numbers) ->
         for index in [0..numbers.length - 1]
             currentTestingNum = numbers[index]
-            currentValidNum = @lastValidNums[index]
+            currentValidNum = @initialValidNums[index]
             if currentTestingNum isnt currentValidNum
                 percentValue = currentTestingNum/currentValidNum
                 if percentValue < 0.8 or percentValue > 1.2
@@ -105,6 +105,7 @@ class Player
             valid = @briefCheckIfNumbersValid(@currentNums)
             if valid
                 @lastValidNums = @currentNums
+                @initialValidNums = @currentNums
             else
                 console.log("FIRST RECEIVED NUMBERS FROM PLAYER NOT VALID")
                 return
