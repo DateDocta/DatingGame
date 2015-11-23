@@ -10,6 +10,7 @@
 
   Game = (function() {
     function Game() {
+      var http, server;
       this.utils = new Utils;
       this.matchMaker = new MatchMaker(this);
       this.player = new Player(this);
@@ -20,12 +21,29 @@
       this.waitingForPCandidate = true;
       this.epsilon = this.utils.EPSILON;
       this.turn = 0;
+      server = require('websocket').server;
+      http = require('http');
+      this.socket = new server({
+        httpServer: http.createServer().listen(1990)
+      });
+      this.connection;
+      this.socket.on('request', (function(_this) {
+        return function(request) {
+          return _this.connection = request.accept(null, request.origin);
+        };
+      })(this));
       this.maxScore = -100;
       this.setup();
     }
 
     Game.prototype.delay = function(ms, func) {
       return setTimeout(func, ms);
+    };
+
+    Game.prototype.broadcast_message = function(message) {
+      if (this.connection != null) {
+        return this.connection.send(message);
+      }
     };
 
     Game.prototype.setup = function() {
@@ -189,7 +207,7 @@
     };
 
     Game.prototype.updateGUI = function(mmCandidate, pCandidate, score) {
-      var currentWeight, data, i, index, mWeight, pWeight, ref, vAndF, vArray;
+      var currentWeight, data, dataWithScoreObj, i, index, mWeight, pWeight, ref, vAndF, vArray;
       data = [];
       for (index = i = 0, ref = this.N - 1; 0 <= ref ? i <= ref : i >= ref; index = 0 <= ref ? ++i : --i) {
         currentWeight = [];
@@ -206,9 +224,11 @@
         currentWeight.push(pWeight);
         data.push(currentWeight);
       }
-      console.log("weight data is: ");
-      console.log(data);
-      return console.log("Score is: " + score);
+      dataWithScoreObj = {
+        data: data,
+        score: score
+      };
+      return this.broadcast_message(JSON.stringify(dataWithScoreObj));
     };
 
     return Game;
