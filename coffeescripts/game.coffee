@@ -193,8 +193,8 @@ class Game
             currentWeight.push(pWeight)
             data.push(currentWeight)
 
-        #console.log("weight data is: ")
-        #console.log(data)
-        #console.log("Score is: #{score}")
+        dataWithScoreObj =
+            data: data
+            score: score
 
 module.exports = Game
