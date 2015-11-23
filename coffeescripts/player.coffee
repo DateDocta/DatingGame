@@ -12,6 +12,7 @@ class Player
         @HOST = @utils.HOST
         @PLAYER_PORT = @utils.PLAYER_PORT
         @time_left_in_seconds = 120
+        @initialNumbers
 
     checkIfSumToCorrectValues: (numbers) ->
         totalPositiveValue = 0
@@ -45,7 +46,7 @@ class Player
         totalChanged = 0
 
         for index in [0..numbers.length - 1]
-            if numbers[index] isnt @lastValidNums[index]
+            if numbers[index] isnt @initialNumbers[index]
                 totalChanged += 1
 
         valid = totalChanged <= maxAllowedToChange
@@ -53,7 +54,7 @@ class Player
     checkIfChangedValuesAreMaxTwentyPercentDifferent: (numbers) ->
         for index in [0..numbers.length - 1]
             currentTestingNum = numbers[index]
-            currentValidNum = @lastValidNums[index]
+            currentValidNum = @initialNumbers[index]
             if currentTestingNum isnt currentValidNum
                 percentValue = currentTestingNum/currentValidNum
                 if percentValue < 0.8 or percentValue > 1.2
@@ -104,6 +105,7 @@ class Player
             valid = @briefCheckIfNumbersValid(@currentNums)
             if valid
                 @lastValidNums = @currentNums
+                @initialNumbers = @currentNums
             else
                 console.log("FIRST RECEIVED NUMBERS FROM PLAYER NOT VALID")
                 return
