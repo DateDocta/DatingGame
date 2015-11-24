@@ -1,3 +1,4 @@
+fs = require 'fs'
 Player = require "./player"
 MatchMaker = require "./matchmaker"
 Utils = require "./utils"
@@ -13,23 +14,35 @@ class Game
         @waitingForMMCandidate = false
         @waitingForPCandidate = true
         @epsilon = @utils.EPSILON
+        @createAttributeList()
         @turn = 0
         server = require('websocket').server
-        http = require('http');
+        http = require('http')
         @socket = new server({httpServer: http.createServer().listen(1990)})
         @connection
         @socket.on 'request', (request) =>
           @connection = request.accept(null, request.origin)
-          # @connection.on 'message', (message) =>
-          #   @tester()
 
         @maxScore = -100
 
         @setup()
 
+    createAttributeList: ->
+        fs.readFile 'attributes', 'utf8', (err, data) =>
+            fileText = data
+            textArray = fileText.split("\n")
+            textArray.pop()
+
+            usableAttributes = []
+            for index in [1..@N]
+                randomIndex = Math.floor(Math.random() * textArray.length)
+                usableAttributes.push(textArray[randomIndex])
+                textArray.splice(randomIndex, 1)
+                
+            console.log("Attributes acquired")
+            @attributeList = usableAttributes
+
     delay: (ms, func) -> setTimeout func, ms
-
-
 
     broadcast_message: (message) ->
       @connection.send(message) if @connection?
@@ -192,12 +205,10 @@ class Game
         data = []
         for index in [0..@N-1]
             currentWeight = []
-            vArray = [index + 8, 0, 0]
-            console.log(vArray)
             
             vAndF =
-                v: vArray
-                f: "Weight #{index}"
+                v: index
+                f: @attributeList[index]
 
             mWeight = mmCandidate[index]
             pWeight = pCandidate[index]

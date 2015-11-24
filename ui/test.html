@@ -38,9 +38,10 @@
 
   function drawStacked(data_payload) {
     var data = new google.visualization.DataTable();
-    data.addColumn('timeofday', 'Attribute');
-    data.addColumn('number', 'Player Candidate');
-    data.addColumn('number', 'MatchMaker Candidate');
+    //data.addColumn('string', 'Attribute');
+    data.addColumn('number', 'Attribute');
+    data.addColumn('number', 'Player');
+    data.addColumn('number', 'Hitch');
 
     data.addRows(data_payload);
 
@@ -48,11 +49,7 @@
       title: 'Dating Game',
       isStacked: false,
       hAxis: {
-        title: 'Attributes',
-        viewWindow: {
-          min: [7, 30, 0],
-          max: [24, 30, 0]
-        }
+        title: 'Attributes'
       },
       vAxis: {
         title: 'Rating (range from [-1,1])'
