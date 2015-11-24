@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <title>💓Dating Game💓</title>
+  <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+  <style type='text/css'>
+    body {
+      font-family: sans-serif;
+      padding: 10px;
+    }
+
+    h1 {
+      font-weight: bold;
+      margin-bottom: 8px;
+    }
+
+    label {
+      font-size: small;
+    }
+
+    .left-div {
+        float:left;
+        width:90%;
+    }
+
+    .outter-div {
+        clear: both;
+    }
+
+    .score-span {
+        display: table-cell;
+        vertical-align: middle;
+    }
+
+    .right-div {
+        float:right;
+        /*display: table;*/
+        width:10%;
+        text-align: center;
+    }
+
+    #controls {
+      padding-bottom: 10px;
+      margin-bottom: 10px;
+      border-bottom: 1px solid #000;
+    }
+  </style>
+  <script>
+  var divs = 0;
+  google.load('visualization', '1', {
+    packages: ['corechart', 'bar']
+  });
+  // google.setOnLoadCallback(drawStacked);
+
+  function drawStacked(data_payload, score) {
+    var data = new google.visualization.DataTable();
+    //data.addColumn('string', 'Attribute');
+    data.addColumn('number', 'Attribute');
+    data.addColumn('number', 'Player');
+    data.addColumn('number', 'Hitch');
+
+    data.addRows(data_payload);
+
+    var options = {
+      title: 'Dating Game',
+      isStacked: false,
+      hAxis: {
+        title: 'Attributes'
+      },
+      vAxis: {
+        title: 'Rating (range from [-1,1])'
+      }
+    };
+
+    var outter_div = document.createElement('div');
+    outter_div.id = "outter_div" + divs;
+    outter_div.className = "outter-div"
+    document.getElementById('chart_divs').appendChild(outter_div);
+    var chart_span = document.createElement('div');
+    chart_span.id = "chart_span" + divs
+    outter_div.appendChild(chart_span)
+    divs = divs + 1;
+    chart_span.className = 'left-div';
+    // iDive.appendChild(iDiv);
+
+    var score_div = document.createElement('div');
+    // score_span.innerHTML = "SCORE";
+    score_div.className = "right-div";
+
+    var score_span = document.createElement('p');
+    score_span.className = "score-span";
+    score_span.innerHTML = "SCORE";
+
+    var score_p = document.createElement('p');
+    score_p.className = "score-span";
+    score_p.innerHTML = score;
+
+    outter_div.appendChild(score_div);
+    score_div.appendChild(score_span);
+    var image = document.createElement('img');
+    if(score > 0)
+      image.src = "images/heart_emoji.png"
+    else
+      image.src = "images/broken_heart_emoji.png"
+
+    image.className = "score-span";
+    score_div.appendChild(image);
+    score_div.appendChild(score_p);
+
+    var chart2 = new google.visualization.ColumnChart(document.getElementById(chart_span.id));
+    chart2.draw(data, options);
+  }
+
+  function drawEndMessage(score, turn) {
+    var scorePara = document.createElement("P");
+    scorePara.innerHTML = "Max Score: " + score;
+    var turnPara = document.createElement("P");
+    turnPara.innerHTML = "Number of turns: " + turn;
+    var title = document.createElement("h2");
+    title.innerHTML = "Final Results"
+    document.getElementById('endMessage').appendChild(title);
+    document.getElementById('endMessage').appendChild(scorePara);
+    document.getElementById('endMessage').appendChild(turnPara);
+  }
+
+  </script>
+  <script type='text/javascript'>
+    //<![CDATA[
+
+
+    window.onload = function() {
+      if (!window.WebSocket) {
+        alert("Your browser does not support the WebSocket API!");
+      } else {
+        var websocketurl = "ws://localhost:6699";
+        var connstatus = document.getElementById("connectionstatus");
+        var infodiv = document.getElementById("info");
+
+        socket = new WebSocket(websocketurl);
+
+        socket.onopen = function() {
+          connstatus.innerHTML = "Connected!";
+        };
+
+        socket.onclose = function() {
+          connstatus.innerHTML = "Disconnected";
+        };
+
+        socket.onmessage = function(message) {
+          var parsed_data = JSON.parse(message.data);
+          var type = parsed_data.type;
+          if (type == "end") {
+            var score = parsed_data.score;
+            var turn = parsed_data.turn;
+            drawEndMessage(score, turn);
+          }
+          else if (type == "regular") {
+            var data = parsed_data.data;
+            var score = parsed_data.score;
+            drawStacked(data, score);
+          }
+          window.scrollTo(0,document.body.scrollHeight);
+        };
+      }
+
+      function closeConnection() {
+        if (socket) {
+          socket.close();
+        }
+      }
+    }
+  </script>
+</head>
+
+<body>
+  <h1 style="text-align: center;"><img src="images/heart_eyes.png">Dating Game<img src="images/heart_eyes.png"></h1>
+  <div id="info">
+    <p>
+      <strong>Status: </strong>
+      <span id="connectionstatus">Disconnected</span>
+    </p>
+  </div>
+  <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+  <div id="chart_divs">
+  </div>
+  <br />
+  <br />
+  <div id="endMessage" style="clear: both">
+  </div>
+</body>
+
+</html>
