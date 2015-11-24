@@ -3,11 +3,8 @@
 
 <head>
   <meta http-equiv="content-type" content="text/html; charset=UTF-8">
-  <title>WebSockets Example - jsFiddle demo by bmknight</title>
-  <script type='text/javascript' src='/js/lib/dummy.js'></script>
+  <title>💓Dating Game💓</title>
   <script type="text/javascript" src="https://www.google.com/jsapi"></script>
-  <link rel="stylesheet" type="text/css" href="/css/normalize.css">
-  <link rel="stylesheet" type="text/css" href="/css/result-light.css">
   <style type='text/css'>
     body {
       font-family: sans-serif;
@@ -23,6 +20,27 @@
       font-size: small;
     }
 
+    .left-div {
+        float:left;
+        width:90%;
+    }
+
+    .outter-div {
+        clear: both;
+    }
+
+    .score-span {
+        display: table-cell;
+        vertical-align: middle;
+    }
+
+    .right-div {
+        float:right;
+        /*display: table;*/
+        width:10%;
+        text-align: center;
+    }
+
     #controls {
       padding-bottom: 10px;
       margin-bottom: 10px;
@@ -36,7 +54,7 @@
   });
   // google.setOnLoadCallback(drawStacked);
 
-  function drawStacked(data_payload) {
+  function drawStacked(data_payload, score) {
     var data = new google.visualization.DataTable();
     //data.addColumn('string', 'Attribute');
     data.addColumn('number', 'Attribute');
@@ -56,12 +74,42 @@
       }
     };
 
-    var iDiv = document.createElement('div');
-    iDiv.id = "newdiv" + divs;
+    var outter_div = document.createElement('div');
+    outter_div.id = "outter_div" + divs;
+    outter_div.className = "outter-div"
+    document.getElementById('chart_divs').appendChild(outter_div);
+    var chart_span = document.createElement('div');
+    chart_span.id = "chart_span" + divs
+    outter_div.appendChild(chart_span)
     divs = divs + 1;
-    iDiv.className = 'block';
-    document.getElementById('chart_divs').appendChild(iDiv);
-    var chart2 = new google.visualization.ColumnChart(document.getElementById(iDiv.id));
+    chart_span.className = 'left-div';
+    // iDive.appendChild(iDiv);
+
+    var score_div = document.createElement('div');
+    // score_span.innerHTML = "SCORE";
+    score_div.className = "right-div";
+
+    var score_span = document.createElement('p');
+    score_span.className = "score-span";
+    score_span.innerHTML = "SCORE";
+
+    var score_p = document.createElement('p');
+    score_p.className = "score-span";
+    score_p.innerHTML = score;
+
+    outter_div.appendChild(score_div);
+    score_div.appendChild(score_span);
+    var image = document.createElement('img');
+    if(score > 0)
+      image.src = "images/heart_emoji.png"
+    else
+      image.src = "images/broken_heart_emoji.png"
+
+    image.className = "score-span";
+    score_div.appendChild(image);
+    score_div.appendChild(score_p);
+
+    var chart2 = new google.visualization.ColumnChart(document.getElementById(chart_span.id));
     chart2.draw(data, options);
   }
 
@@ -70,8 +118,11 @@
     scorePara.innerHTML = "Max Score: " + score;
     var turnPara = document.createElement("P");
     turnPara.innerHTML = "Number of turns: " + turn;
-    document.getElementById('chart_divs').appendChild(scorePara);
-    document.getElementById('chart_divs').appendChild(turnPara);
+    var title = document.createElement("h2");
+    title.innerHTML = "Final Results"
+    document.getElementById('endMessage').appendChild(title);
+    document.getElementById('endMessage').appendChild(scorePara);
+    document.getElementById('endMessage').appendChild(turnPara);
   }
 
   </script>
@@ -108,9 +159,8 @@
           else if (type == "regular") {
             var data = parsed_data.data;
             var score = parsed_data.score;
-            drawStacked(data);
+            drawStacked(data, score);
           }
-
           window.scrollTo(0,document.body.scrollHeight);
         };
       }
@@ -125,7 +175,7 @@
 </head>
 
 <body>
-  <h1>Dating Game</h1>
+  <h1 style="text-align: center;"><img src="images/heart_eyes.png">Dating Game<img src="images/heart_eyes.png"></h1>
   <div id="info">
     <p>
       <strong>Status: </strong>
@@ -134,10 +184,11 @@
   </div>
   <script type="text/javascript" src="https://www.google.com/jsapi"></script>
   <div id="chart_divs">
-    <div id="chart_div"></div>
   </div>
   <br />
   <br />
+  <div id="endMessage" style="clear: both">
+  </div>
 </body>
 
 </html>
