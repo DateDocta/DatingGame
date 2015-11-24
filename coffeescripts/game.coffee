@@ -18,7 +18,7 @@ class Game
         @turn = 0
         server = require('websocket').server
         http = require('http')
-        @socket = new server({httpServer: http.createServer().listen(1990)})
+        @socket = new server({httpServer: http.createServer().listen(6699)})
         @connection
         @socket.on 'request', (request) =>
           @connection = request.accept(null, request.origin)

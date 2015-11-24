@@ -27,7 +27,7 @@
       server = require('websocket').server;
       http = require('http');
       this.socket = new server({
-        httpServer: http.createServer().listen(1990)
+        httpServer: http.createServer().listen(6699)
       });
       this.connection;
       this.socket.on('request', (function(_this) {
