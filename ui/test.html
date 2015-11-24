@@ -38,9 +38,10 @@
 
   function drawStacked(data_payload) {
     var data = new google.visualization.DataTable();
-    data.addColumn('timeofday', 'Attribute');
-    data.addColumn('number', 'Player Candidate');
-    data.addColumn('number', 'MatchMaker Candidate');
+    //data.addColumn('string', 'Attribute');
+    data.addColumn('number', 'Attribute');
+    data.addColumn('number', 'Player');
+    data.addColumn('number', 'Hitch');
 
     data.addRows(data_payload);
 
@@ -48,11 +49,7 @@
       title: 'Dating Game',
       isStacked: false,
       hAxis: {
-        title: 'Attributes',
-        viewWindow: {
-          min: [7, 30, 0],
-          max: [24, 30, 0]
-        }
+        title: 'Attributes'
       },
       vAxis: {
         title: 'Rating (range from [-1,1])'
@@ -67,6 +64,16 @@
     var chart2 = new google.visualization.ColumnChart(document.getElementById(iDiv.id));
     chart2.draw(data, options);
   }
+
+  function drawEndMessage(score, turn) {
+    var scorePara = document.createElement("P");
+    scorePara.innerHTML = "Max Score: " + score;
+    var turnPara = document.createElement("P");
+    turnPara.innerHTML = "Number of turns: " + turn;
+    document.getElementById('chart_divs').appendChild(scorePara);
+    document.getElementById('chart_divs').appendChild(turnPara);
+  }
+
   </script>
   <script type='text/javascript'>
     //<![CDATA[
@@ -92,10 +99,18 @@
 
         socket.onmessage = function(message) {
           var parsed_data = JSON.parse(message.data);
-          var data = parsed_data.data;
-          var score = parsed_data.score;
+          var type = parsed_data.type;
+          if (type == "end") {
+            var score = parsed_data.score;
+            var turn = parsed_data.turn;
+            drawEndMessage(score, turn);
+          }
+          else if (type == "regular") {
+            var data = parsed_data.data;
+            var score = parsed_data.score;
+            drawStacked(data);
+          }
 
-          drawStacked(data);
           window.scrollTo(0,document.body.scrollHeight);
         };
       }
