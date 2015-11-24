@@ -44,8 +44,9 @@ class Game
 
     delay: (ms, func) -> setTimeout func, ms
 
-    broadcast_message: (message) ->
-      @connection.send(message) if @connection?
+    broadcast_message: (jsonObject) ->
+        jsonedMessage = JSON.stringify(jsonObject)
+        @connection.send(jsonedMessage) if @connection?
 
     setup: ->
         @matchMaker.addListener(this)
@@ -173,6 +174,14 @@ class Game
         endMessage += "Last Player Candidate: #{@currentPCandidate}\n"
 
         console.log(endMessage)
+
+        ultimateScoreObject =
+            type: "end"
+            score: @maxScore
+            turn: @turn
+
+        @broadcast_message(ultimateScoreObject)
+        
         @matchMaker.sendMessage("gameover")
         @player.sendMessage("gameover")
 
@@ -218,9 +227,10 @@ class Game
             data.push(currentWeight)
 
         dataWithScoreObj =
+            type: "regular"
             data: data
             score: score
 
-        @broadcast_message(JSON.stringify(dataWithScoreObj))
+        @broadcast_message(dataWithScoreObj)
 
 module.exports = Game
