@@ -62,9 +62,11 @@
       return setTimeout(func, ms);
     };
 
-    Game.prototype.broadcast_message = function(message) {
+    Game.prototype.broadcast_message = function(jsonObject) {
+      var jsonedMessage;
+      jsonedMessage = JSON.stringify(jsonObject);
       if (this.connection != null) {
-        return this.connection.send(message);
+        return this.connection.send(jsonedMessage);
       }
     };
 
@@ -166,7 +168,7 @@
     };
 
     Game.prototype.endGame = function() {
-      var endMessage, score;
+      var endMessage, score, ultimateScoreObject;
       endMessage = "";
       if (this.matchMaker.timed_out()) {
         endMessage += "Matchmaker timed out\n\n";
@@ -188,6 +190,12 @@
       endMessage += "Last Matchmaker Candidate: " + this.currentMMCandidate + "\n\n";
       endMessage += "Last Player Candidate: " + this.currentPCandidate + "\n";
       console.log(endMessage);
+      ultimateScoreObject = {
+        type: "end",
+        score: this.maxScore,
+        turn: this.turn
+      };
+      this.broadcast_message(ultimateScoreObject);
       this.matchMaker.sendMessage("gameover");
       return this.player.sendMessage("gameover");
     };
@@ -245,10 +253,11 @@
         data.push(currentWeight);
       }
       dataWithScoreObj = {
+        type: "regular",
         data: data,
         score: score
       };
-      return this.broadcast_message(JSON.stringify(dataWithScoreObj));
+      return this.broadcast_message(dataWithScoreObj);
     };
 
     return Game;
