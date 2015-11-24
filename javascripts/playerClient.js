@@ -34,15 +34,44 @@
   };
 
   createBasicCandidate = function() {
-    var candidate, i, index, ref, weightValue;
+    var candidate, i, index, negativeWeightValue, positiveWeightValue, ref, value, weightValue;
     candidate = [];
     weightValue = 1 / (N / 2);
+    weightValue = weightValue.toFixed(2);
+    weightValue = parseFloat(weightValue);
+    negativeWeightValue = 0.0;
+    positiveWeightValue = 0.0;
     for (index = i = 1, ref = N; 1 <= ref ? i <= ref : i >= ref; index = 1 <= ref ? ++i : --i) {
       if (index % 2 === 0) {
         candidate.push(weightValue);
+        positiveWeightValue = weightValue + positiveWeightValue;
       } else {
         candidate.push(-weightValue);
+        negativeWeightValue = weightValue + negativeWeightValue;
       }
+    }
+    positiveWeightValue = positiveWeightValue.toFixed(2);
+    negativeWeightValue = negativeWeightValue.toFixed(2);
+    if (positiveWeightValue < 1) {
+      value = candidate[1];
+      value += 1 - positiveWeightValue;
+      candidate[1] = value.toFixed(2);
+    } else if (positiveWeightValue > 1) {
+      value = candidate[1];
+      value -= positiveWeightValue - 1;
+      value.toFixed(2);
+      candidate[1] = value.toFixed(2);
+    }
+    if (negativeWeightValue < 1) {
+      value = candidate[0];
+      value -= 1 - negativeWeightValue;
+      value.toFixed(2);
+      candidate[0] = value.toFixed(2);
+    } else if (positiveWeightValue > 1) {
+      value = candidate[0];
+      value += negativeWeightValue - 1;
+      value.toFixed(2);
+      candidate[0] = value.toFixed(2);
     }
     return candidate;
   };
