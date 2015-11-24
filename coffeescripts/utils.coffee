@@ -1,5 +1,5 @@
 class Utils
-    N: 20
+    N: 38
     HOST: '127.0.0.1'
     MATCHMAKER_PORT: 9696
     PLAYER_PORT: 6969
